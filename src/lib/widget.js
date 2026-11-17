@@ -141,7 +141,7 @@ export class Samtpfote extends HTMLElement {
     const opacity=(name,n)=>this.parts[name].setAttribute('opacity',String(n));
     tx('root',`translate(${motion*Math.sin(t*.44)*.7} ${-hop})`);
     tx('body',`translate(${158+gr*3+st*1.5} 310) scale(${1+s*.28+st*.06-swat*.04} ${1-s*.47-st*.08+swat*.03+breath*.004}) translate(-158 -310)`);
-    this.parts.torso.setAttribute('d',torsoPath(st,swat));
+    const torso=torsoPath(st,swat);this.parts.torso.setAttribute('d',torso);this.parts['torso-light'].setAttribute('d',torso);
     const tilt=(gx*5+Math.sin(t*.65)*1.1*motion)*(1-s)-s*17+pet*-8+gr*10-p.wipe*7-st*4+p.chest*13+p.flank*24+(poseAction.shake||0)*2;
     tx('head',`translate(${gx*5-s*26-st*3-gr*8+p.flank*15} ${gy*3+s*83+st*25+breath+gr*9-p.wipe*10-hop*3+p.chest*27+p.flank*23+(poseAction.lick||0)*1.2*motion}) rotate(${tilt} 158 175)`);
     const openness=clamp(p.blink*(1-s),.015,1);
@@ -186,7 +186,9 @@ export class Samtpfote extends HTMLElement {
     tx('glass-ripples',`translate(0 -18)`);
     opacity('paw-l',1-Math.max(l,gr));opacity('paw-r',1-r);
     tx('shadow',`translate(160 312) scale(${1+s*.35+st*.08} ${1-swat*.2}) translate(-160 -312)`);
-    opacity('shadow',.34-swat*.05);opacity('cast-shadow',.18+st*.03);
+    const night=this.getAttribute('lighting')==='night';
+    opacity('shadow',(night?.43:.33)-swat*.05);opacity('cast-shadow',(night?.23:.16)+st*.03);
+    tx('cast-shadow',`translate(160 312) skewX(${night?22:10}) scale(${night?1.18:1} ${night?1.15:.85}) translate(-160 -312)`);
     const groomX=133+gr*14+p.wipe*((poseAction.side||0)?29:-24),groomY=300-gr*108-p.wipe*39;
     opacity('groom-limb',Math.min(1,gr*4));
     this.parts['groom-arm'].setAttribute('d',armPath(133,237,groomX,groomY,-13*gr));
