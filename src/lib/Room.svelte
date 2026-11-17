@@ -9,7 +9,7 @@
       const {width,height}=scene.getBoundingClientRect();
       const scale=Math.max(width/1536,height/1024);
       const imageHeight=1024*scale;
-      const seatY=(height-imageHeight)/2+imageHeight*.655;
+      const seatY=(height-imageHeight)/2+imageHeight*.635;
       scene.style.setProperty('--seat-y',`${seatY}px`);
     };
     const observer=new ResizeObserver(align);observer.observe(scene);align();
