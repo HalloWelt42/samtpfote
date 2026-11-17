@@ -3,20 +3,23 @@ import { catArt } from './art.js';
 import { coatStyles } from './coats.js';
 import { CAT_NAME, ATTRIBUTION } from './config.js';
 import { choreography, armPath, torsoPath } from './motion.js';
+import { DEFAULT_BEHAVIOR, resolveBehavior } from './options.js';
+import { anchorPlacement, coordinate } from './placement.js';
 import { clamp, follow, idleState, stateLabels } from './behavior.js';
 let serial = 0;
-const styles = `:host{position:relative;display:block;width:var(--cat-size,220px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,10000);transform:translate3d(var(--cat-avoid-x,0px),0,0);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,180px),35vw)}}`;
+const styles = `:host{position:relative;display:block;width:var(--cat-size,170px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,10000);transform:translate3d(var(--cat-avoid-x,0px),0,0);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}:host([data-placement="free"]),:host([data-placement="anchor"]){position:fixed;left:var(--cat-position-x,16px);top:var(--cat-position-y,16px);right:auto;bottom:auto;margin:0;transform:none;z-index:var(--cat-z-index,10000);pointer-events:none}:host([data-placement="missing"]){visibility:hidden;position:fixed;left:0;top:0}:host([data-placement="free"]) button,:host([data-placement="anchor"]) button{pointer-events:auto}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,170px),35vw)}}`;
 
 export class Samtpfote extends HTMLElement {
-  static observedAttributes = ['sleep-after', 'paused', 'sound-src', 'cat-name'];
+  static observedAttributes = ['sleep-after', 'paused', 'sound-src', 'cat-name', 'anchor', 'anchor-align', 'x', 'y', 'offset-x', 'offset-y', 'position'];
   constructor() {
     super();
     this.attachShadow({mode:'open'});
     this.shadowRoot.innerHTML = `<style>${styles}${coatStyles}</style><button type="button" aria-label="${CAT_NAME} streicheln">${catArt(`samt-${++serial}`)}</button><span class="credit">${ATTRIBUTION}</span>`;
     this.parts = Object.fromEntries([...this.shadowRoot.querySelectorAll('[data-part]')].map(el=>[el.dataset.part,el]));
+    this.options=resolveBehavior();this._anchorElement=null;this._anchorObserver=null;this._observedAnchor=null;
     this.state = 'curious'; this.lastActivity = 0; this.lastPointerWake = 0; this.lastFrame = 0; this.time = 0;
     this.gaze = {x:0,y:0}; this.target = {x:0,y:0}; this.pose = {sleep:0,blink:1,pet:0,stretch:0,groom:0,headX:0,headY:0};
-    this.nextBlink = 2 + Math.random()*3; this.blinkStart = -100; this.nextAction = 7 + Math.random()*7; this.actionUntil = 0; this.override = null; this.wakeUntil = 0;
+    this.nextBlink = this.options.blink.minInterval+Math.random()*(this.options.blink.maxInterval-this.options.blink.minInterval); this.blinkStart = -100; this.nextAction = this.options.spontaneous.minInterval+Math.random()*(this.options.spontaneous.maxInterval-this.options.spontaneous.minInterval); this.actionUntil = 0; this.override = null; this.wakeUntil = 0;
     this.sleepElapsed=0;this.nearTime=0;this.swatCooldown=0;this.pointer=null;this.audioVolume=0;this.actionStarted=0;this.groomVariant=0;this.groomCount=0;this.avoid={x:0,target:0,dwell:0,clear:0,enteredAt:0};
     this.frame = this.frame.bind(this);
   }
@@ -32,7 +35,7 @@ export class Samtpfote extends HTMLElement {
       const now=performance.now();
       if(now-this.lastPointerWake>120) {this.activity();this.lastPointerWake=now;}
     },{passive:true,signal});
-    window.addEventListener('scroll',()=>this.activity(),{passive:true,signal,capture:true});
+    window.addEventListener('scroll',()=>{this.updatePlacement();this.activity()},{passive:true,signal,capture:true});
     window.addEventListener('keydown',()=>this.activity(),{signal});
     window.addEventListener('pointerdown',()=>this.activity(),{passive:true,signal});
     document.addEventListener('visibilitychange',()=>{
@@ -40,24 +43,47 @@ export class Samtpfote extends HTMLElement {
       if(document.hidden)this.stopPurr();
       else this.start();
     },{signal});
+    window.addEventListener('resize',()=>this.updatePlacement(),{signal,passive:true});
+    this.updatePlacement();
     this.media.addEventListener('change',()=>{this.lastFrame=0;this.start();},{signal});
     this.shadowRoot.querySelector('button').addEventListener('click',()=>this.perform('petting'),{signal});
     this.start();
   }
-  disconnectedCallback() { this.abort?.abort();cancelAnimationFrame(this.raf);this.stopPurr(); }
+  disconnectedCallback() { this.abort?.abort();cancelAnimationFrame(this.raf);this.stopPurr();this._anchorObserver?.disconnect();this._observedAnchor=null; }
   attributeChangedCallback(attr) {
     if(attr==='sound-src' || attr==='paused')this.stopPurr();
     if(attr==='cat-name') { const name=this.getAttribute('cat-name')||CAT_NAME;this.shadowRoot.querySelector('button').setAttribute('aria-label',`${name} streicheln`);this.shadowRoot.querySelector('svg').setAttribute('aria-label',`${name}, eine kleine Katze mit großen Augen`);}
-    if(this.isConnected)this.start();
+    if(this.isConnected){this.updatePlacement();this.start();}
   }
-  get sleepAfter() {const n=Number(this.getAttribute('sleep-after')||35);return Number.isFinite(n)?clamp(n,5,3600):35;}
+  set anchorElement(element) {this._anchorElement=element instanceof Element?element:null;if(this.isConnected)this.updatePlacement();}
+  get anchorElement() {return this._anchorElement;}
+  updatePlacement() {
+    const selector=this.getAttribute('anchor');
+    let target=this._anchorElement;
+    if(!target && selector){try{target=document.querySelector(selector);}catch{target=null;}}
+    if(target && target!==this && target.isConnected){
+      this.dataset.placement='anchor';
+      const box=target.getBoundingClientRect(),own=this.getBoundingClientRect();
+      const value=anchorPlacement(box,own,this.getAttribute('anchor-align')||'top-right',Number(this.getAttribute('offset-x'))||0,Number(this.getAttribute('offset-y'))||0);
+      this.style.setProperty('--cat-position-x',`${value.x.toFixed(2)}px`);this.style.setProperty('--cat-position-y',`${value.y.toFixed(2)}px`);
+      if(this._observedAnchor!==target){this._anchorObserver?.disconnect();this._observedAnchor=target;this._anchorObserver=new ResizeObserver(()=>this.updatePlacement());this._anchorObserver.observe(target);}
+    }else if(selector || this._anchorElement){this.dataset.placement='missing';}
+    else if(this.getAttribute('position')==='free' || this.hasAttribute('x') || this.hasAttribute('y')){
+      this.dataset.placement='free';
+      for(const axis of ['x','y']){const value=coordinate(this.getAttribute(axis));this.style.setProperty(`--cat-position-${axis}`,CSS.supports(axis==='x'?'left':'top',value)?value:'16px');}
+    }else if(this.dataset.placement){delete this.dataset.placement;this.style.removeProperty('--cat-position-x');this.style.removeProperty('--cat-position-y');}
+  }
+  configure(patch = {}) {this.options=resolveBehavior(patch,this.options);if(patch?.blink)this.nextBlink=this.time+this.options.blink.minInterval+Math.random()*(this.options.blink.maxInterval-this.options.blink.minInterval);if(patch?.spontaneous)this.nextAction=this.time+this.options.spontaneous.minInterval+Math.random()*(this.options.spontaneous.maxInterval-this.options.spontaneous.minInterval);if(this.isConnected)this.start();return this;}
+  get behavior() {return resolveBehavior({},this.options);}
+  set behavior(value) {this.configure(value);}
+  get sleepAfter() {const n=Number(this.getAttribute('sleep-after')??this.options.idle.sleepAfter);return Number.isFinite(n)?clamp(n,5,3600):this.options.idle.sleepAfter;}
   start() {cancelAnimationFrame(this.raf);if(!document.hidden)this.raf=requestAnimationFrame(this.frame);}
   activity() {
     const now=performance.now();
     if(now<(this.ignoreActivityUntil||0))return;
     this.lastActivity=now;
     if(this.override==='sleeping' || this.override==='drowsy') this.override=null;
-    if(this.state==='sleeping' || this.state==='drowsy') {this.wakeUntil=now+2200;this.blinkStart=this.time+.7;}
+    if(this.state==='sleeping' || this.state==='drowsy') {this.wakeUntil=now+this.options.idle.wakeDuration*1000;this.blinkStart=this.time+.7;}
   }
   perform(action) {
     const allowed=['curious','sleeping','drowsy','stretching','grooming','petting','swatting','auto'];
@@ -66,9 +92,9 @@ export class Samtpfote extends HTMLElement {
     this.ignoreActivityUntil=action==='sleeping'?performance.now()+900:0;
     this.actionStarted=performance.now();
     if(action==='grooming')this.groomVariant=this.groomCount++%3;
-    if(['petting','stretching','grooming','swatting'].includes(action)) this.actionUntil=performance.now()+ (action==='grooming'?12200:action==='swatting'?3900:action==='stretching'?5600:4200);
+    if(['petting','stretching','grooming','swatting'].includes(action)) this.actionUntil=performance.now()+ this.options.actions[action]*1000;
     if(action==='petting')this.playPurr();
-    if(action==='curious')this.wakeUntil=performance.now()+1800;
+    if(action==='curious')this.wakeUntil=performance.now()+this.options.idle.wakeDuration*1000;
     this.start();
   }
   playPurr() {
@@ -86,72 +112,75 @@ export class Samtpfote extends HTMLElement {
   }
   frame(now) {
     const dt=this.lastFrame?clamp((now-this.lastFrame)/1000,0,.05):1/60; this.lastFrame=now;
-    const reduced=this.media.matches, paused=this.hasAttribute('paused');
+    const settings=this.options;
+    const reduced=this.media.matches||!settings.motion.enabled, paused=this.hasAttribute('paused');
     if(!paused)this.time+=dt;
     const t=this.time;
+    if(this.hasAttribute('anchor') || this._anchorElement || this.hasAttribute('x') || this.hasAttribute('y') || this.getAttribute('position')==='free')this.updatePlacement();
     if(this.override && !['sleeping','drowsy','curious'].includes(this.override) && now>this.actionUntil)this.override=null;
-    let state=this.override||idleState((now-this.lastActivity)/1000,this.sleepAfter);
+    let state=this.override||idleState((now-this.lastActivity)/1000,this.sleepAfter,settings.idle.drowsyRatio);
     if(!this.override && now<this.wakeUntil)state='waking';
-    if(!this.override && state==='curious' && t>this.nextAction && !reduced && !paused && Math.abs(this.avoid.target-this.avoid.x)<.5){
-      this.override=Math.random()<.55?'watching':Math.random()<.5?'grooming':'stretching';this.actionStarted=now;if(this.override==='grooming')this.groomVariant=Math.floor(Math.random()*3);this.actionUntil=now+(this.override==='grooming'?12200:this.override==='stretching'?5600:4200);this.nextAction=t+12+Math.random()*15;state=this.override;
+    if(settings.spontaneous.enabled && !this.override && state==='curious' && t>this.nextAction && !reduced && !paused && Math.abs(this.avoid.target-this.avoid.x)<.5){
+      this.override=Math.random()<.55?'watching':Math.random()<.5?'grooming':'stretching';this.actionStarted=now;if(this.override==='grooming')this.groomVariant=Math.floor(Math.random()*3);this.actionUntil=now+(settings.actions[this.override]||4.2)*1000;this.nextAction=t+settings.spontaneous.minInterval+Math.random()*(settings.spontaneous.maxInterval-settings.spontaneous.minInterval);state=this.override;
     }
-    if(this.pointer && !this.override && !['sleeping','drowsy','waking'].includes(state) && !paused && !reduced && now>this.swatCooldown){
+    if(settings.reactions.swatEnabled && this.pointer && !this.override && !['sleeping','drowsy','waking'].includes(state) && !paused && !reduced && now>this.swatCooldown){
       const r=this.shadowRoot.querySelector('svg').getBoundingClientRect();
       const w=Math.min(r.width,r.height*320/340),h=w*340/320;
       const nose={x:r.left+(r.width-w)/2+w*.5,y:r.top+(r.height-h)/2+h*.51};
       const near=Math.hypot((this.pointer.x-nose.x)/(w*.25),(this.pointer.y-nose.y)/(h*.18))<1;
       this.nearTime=near?this.nearTime+dt:0;
-      if(this.nearTime>1.3){this.perform('swatting');this.swatCooldown=now+10000;this.nearTime=0;state='swatting';}
+      if(this.nearTime>settings.reactions.swatDelay){this.perform('swatting');this.swatCooldown=now+settings.reactions.swatCooldown*1000;this.nearTime=0;state='swatting';}
     } else this.nearTime=0;
     this.setState(state);
     if(paused)return;
     const sleeping=state==='sleeping',drowsy=state==='drowsy';
-    const dock=this.getAttribute('position'),avoid=this.avoid;
-    if(dock && this.pointer && !reduced){
+    const rawDock=this.getAttribute('position');
+    const dock=/^(top|bottom)-(left|right)$/.test(rawDock||'')&&!this.hasAttribute('anchor')&&!this._anchorElement?rawDock:null,avoid=this.avoid;
+    if(dock && this.pointer && !reduced && settings.avoidance.enabled){
       const rect=this.getBoundingClientRect(),homeLeft=rect.left-avoid.x;
-      const atHome=this.pointer.x>homeLeft-45 && this.pointer.x<homeLeft+rect.width+45 && this.pointer.y>rect.top+rect.height*.18 && this.pointer.y<rect.bottom+15;
+      const atHome=this.pointer.x>homeLeft-settings.avoidance.margin && this.pointer.x<homeLeft+rect.width+settings.avoidance.margin && this.pointer.y>rect.top+rect.height*.18 && this.pointer.y<rect.bottom+15;
       const eligible=!['sleeping','petting','grooming','stretching','swatting'].includes(state);
       if(atHome){if(!avoid.enteredAt)avoid.enteredAt=now;avoid.dwell=(now-avoid.enteredAt)/1000;}else {avoid.enteredAt=0;avoid.dwell=0;}
       avoid.clear=atHome?0:avoid.clear+dt;
-      if(avoid.dwell>=3 && avoid.target===0 && state!=='sleeping'){
+      if(avoid.dwell>=settings.avoidance.delay && avoid.target===0 && state!=='sleeping'){
         this.override=null;this.actionUntil=0;this.nextAction=t+7;state='curious';this.setState(state);
         const room=dock.endsWith('right')?rect.left-12:innerWidth-rect.right-12;
-        const distance=clamp(rect.width*.5,75,145);
+        const distance=settings.avoidance.distance||clamp(rect.width*settings.avoidance.sizeFactor,settings.avoidance.minDistance,settings.avoidance.maxDistance);
         avoid.target=(dock.endsWith('right')?-1:1)*Math.max(0,Math.min(distance,room));avoid.dwell=0;
       }
-      if(avoid.clear>8 && eligible)avoid.target=0;
+      if(avoid.clear>settings.avoidance.returnDelay && eligible)avoid.target=0;
     }else {avoid.target=0;avoid.dwell=0;avoid.clear=0;avoid.enteredAt=0;}
-    const before=avoid.x;avoid.x=follow(avoid.x,avoid.target,2.5,dt);
+    const before=avoid.x;avoid.x=follow(avoid.x,avoid.target,settings.avoidance.speed,dt);
     if(Math.abs(avoid.x-avoid.target)<.05)avoid.x=avoid.target;
     this.style.setProperty('--cat-avoid-x',`${avoid.x.toFixed(2)}px`);
     const walk=reduced?0:clamp(Math.abs(avoid.x-before)/Math.max(dt,.001)/50,0,1);
-    const stride=Math.sin(t*8),stepLeft=Math.max(0,stride)*5*walk,stepRight=Math.max(0,-stride)*5*walk;
+    const stride=Math.sin(t*8),stepLeft=Math.max(0,stride)*settings.motion.stepHeight*walk,stepRight=Math.max(0,-stride)*settings.motion.stepHeight*walk;
 
     this.sleepElapsed=(sleeping || (this.sleepElapsed>0 && this.pose.sleep>.05))?this.sleepElapsed+dt:0;
     if(this.audio){
-      const targetVolume=state==='petting'?clamp(Number(this.getAttribute('volume')||35)/100,0,1):0;
+      const targetVolume=state==='petting'?clamp(Number(this.getAttribute('volume')??settings.audio.volume)/100,0,1):0;
       this.audioVolume=follow(this.audioVolume,targetVolume,state==='petting'?3:5,dt);
       this.audio.volume=clamp(this.audioVolume,0,1);
       if(targetVolume===0&&this.audioVolume<.002)this.audio.pause();
     }
-    if(t>this.nextBlink){this.blinkStart=t;this.nextBlink=t+3.5+Math.random()*5;}
+    if(t>this.nextBlink){this.blinkStart=t;this.nextBlink=t+settings.blink.minInterval+Math.random()*(settings.blink.maxInterval-settings.blink.minInterval);}
     const blinkAge=t-this.blinkStart;
-    const blink=blinkAge>=0&&blinkAge<.26?1-Math.sin(blinkAge/.26*Math.PI):1;
+    const blink=blinkAge>=0&&blinkAge<settings.blink.duration?1-Math.sin(blinkAge/settings.blink.duration*Math.PI):1;
     const p=this.pose;
     p.sleep=follow(p.sleep,sleeping?1:drowsy?.36:0,sleeping?1.2:state==='waking'?1.05:2.5,dt);
     p.blink=follow(p.blink,sleeping?0:drowsy?.3:state==='petting'?.1:state==='grooming'?blink*.55:state==='stretching'?blink*.7:blink,30,dt);
     p.pet=follow(p.pet,state==='petting'?1:0,3,dt);
     const actionAge=(now-this.actionStarted)/1000;
-    const poseAction=choreography(state,actionAge,this.groomVariant);
+    const poseAction=choreography(state,actionAge*((DEFAULT_BEHAVIOR.actions[state]||1)/(settings.actions[state]||1)),this.groomVariant);
     p.stretch=follow(p.stretch,poseAction.stretch||0,10,dt);
     p.groom=follow(p.groom,poseAction.lift||0,12,dt);
     p.wipe=follow(p.wipe||0,poseAction.wipe||0,14,dt);
     p.chest=follow(p.chest||0,poseAction.chest||0,9,dt);p.flank=follow(p.flank||0,poseAction.flank||0,9,dt);
     p.reach=follow(p.reach||0,poseAction.reach||0,10,dt);
-    const look=state==='grooming'?{x:-.25+(poseAction.side||0)*.6+p.flank*.7,y:.6+p.chest*.3}:state==='watching'?{x:Math.sin(t*.8)*.7,y:-.4}:this.target;
-    this.gaze.x=follow(this.gaze.x,look.x,6,dt);this.gaze.y=follow(this.gaze.y,look.y,6,dt);
+    const look=state==='grooming'?{x:-.25+(poseAction.side||0)*.6+p.flank*.7,y:.6+p.chest*.3}:state==='watching'?{x:Math.sin(t*.8)*.7,y:-.4}:settings.gaze.enabled?this.target:{x:0,y:0};
+    this.gaze.x=follow(this.gaze.x,look.x,settings.gaze.smoothing,dt);this.gaze.y=follow(this.gaze.y,look.y,settings.gaze.smoothing,dt);
     const gx=this.gaze.x*(1-p.sleep),gy=this.gaze.y*(1-p.sleep),motion=reduced?0:1;
-    const breath=Math.sin(t*(sleeping?1.7:2.2))*(sleeping?1.6:.65)*motion;
+    const breath=Math.sin(t*(sleeping?1.7:2.2))*(sleeping?1.6:.65)*motion*settings.motion.breathingAmplitude;
     const s=p.sleep,st=p.stretch,gr=p.groom,pet=p.pet;
     const swatAge=(now-this.actionStarted)/1000;
     const swatTarget=Math.max(poseAction.left||0,poseAction.right||0);
@@ -160,21 +189,25 @@ export class Samtpfote extends HTMLElement {
     p.leftReach=follow(p.leftReach||0,poseAction.left||0,14,dt);p.rightReach=follow(p.rightReach||0,poseAction.right||0,14,dt);
     const tx=(name,xform)=>this.parts[name].setAttribute('transform',xform);
     const opacity=(name,n)=>this.parts[name].setAttribute('opacity',String(n));
-    tx('root',`translate(${motion*Math.sin(t*.44)*.7} ${-hop-Math.sin(t*16)*walk*.6}) rotate(${stride*walk*.8} 158 285)`);
+    tx('root',`translate(${motion*Math.sin(t*.44)*.7*settings.motion.bodyAmplitude} ${-hop-Math.sin(t*16)*walk*.6}) rotate(${stride*walk*.8} 158 285)`);
     tx('body',`translate(${158+gr*3+st*1.5} 310) scale(${1+s*.28+st*.06-swat*.04} ${1-s*.47-st*.08+swat*.03+breath*.004}) translate(-158 -310)`);
     const torso=torsoPath(st,swat);this.parts.torso.setAttribute('d',torso);this.parts['torso-light'].setAttribute('d',torso);
-    const tilt=(gx*5+Math.sin(t*.65)*1.1*motion)*(1-s)-s*17+pet*-8+gr*10-p.wipe*7-st*4+p.chest*13+p.flank*24+(poseAction.shake||0)*2-stride*walk*1.2;
-    tx('head',`translate(${gx*5-s*26-st*3-gr*8+p.flank*15} ${gy*3+s*83+st*25+breath+gr*9-p.wipe*10-hop*3+p.chest*27+p.flank*23+(poseAction.lick||0)*1.2*motion}) rotate(${tilt} 158 175)`);
+    const tilt=(gx*settings.gaze.headRange+Math.sin(t*.65)*1.1*motion)*(1-s)-s*17+pet*-8+gr*10-p.wipe*7-st*4+p.chest*13+p.flank*24+(poseAction.shake||0)*2-stride*walk*1.2;
+    tx('head',`translate(${gx*settings.gaze.headRange-s*26-st*3-gr*8+p.flank*15} ${gy*3+s*83+st*25+breath+gr*9-p.wipe*10-hop*3+p.chest*27+p.flank*23+(poseAction.lick||0)*1.2*motion}) rotate(${tilt} 158 175)`);
     const openness=clamp(p.blink*(1-s),.015,1);
-    tx('eye-l',`translate(119 143) scale(1 ${openness}) translate(-119 -143)`);
-    tx('eye-r',`translate(198 143) scale(1 ${openness}) translate(-198 -143)`);
-    opacity('eye-l',clamp(openness*7,0,1));opacity('eye-r',clamp(openness*7,0,1));opacity('closed-eyes',1-clamp(openness*5,0,1));
-    tx('pupil-l',`translate(${gx*9} ${gy*6})`);tx('pupil-r',`translate(${gx*9} ${gy*6})`);
-    const earFlick=Math.pow(Math.max(0,Math.sin(t*1.13)),18)*9*motion;
+    const closing=1-openness;
+    for(const [side,cx] of [['l',119],['r',198]]){
+      const top=117+32*closing,bottom=169-20*closing,curve=closing*8;
+      this.parts[`lid-upper-${side}`].setAttribute('d',`M${cx-25} 110H${cx+25}V${top}Q${cx} ${top+curve} ${cx-25} ${top}Z`);
+      this.parts[`lid-lower-${side}`].setAttribute('d',`M${cx-25} 176H${cx+25}V${bottom}Q${cx} ${bottom+curve} ${cx-25} ${bottom}Z`);
+    }
+    opacity('closed-eyes',1-clamp(openness*5,0,1));
+    tx('pupil-l',`translate(${gx*settings.gaze.horizontalRange} ${gy*settings.gaze.verticalRange})`);tx('pupil-r',`translate(${gx*settings.gaze.horizontalRange} ${gy*settings.gaze.verticalRange})`);
+    const earFlick=Math.pow(Math.max(0,Math.sin(t*1.13)),18)*9*motion*settings.motion.earAmplitude;
     tx('ear-l',`rotate(${-earFlick+pet*9-s*7} 103 105)`);tx('ear-r',`rotate(${earFlick*.6-pet*8+s*7} 219 105)`);
     tx('paw-l',`translate(${-p.reach*10+stride*walk*2} ${p.reach*2-stepLeft}) rotate(${p.reach*6+stride*walk*3} 132 248) scale(${1+(poseAction.toes||0)*.025} 1)`);
     tx('paw-r',`translate(${p.reach*10-stride*walk*2} ${p.reach*2-stepRight}) rotate(${-p.reach*6-stride*walk*3} 185 248)`);
-    const tailWave=Math.sin(t*1.25)*motion*(1-s)*13;
+    const tailWave=Math.sin(t*1.25)*motion*(1-s)*13*settings.motion.tailAmplitude;
     const d=`M207 286 C${270+s*14} ${312-s*5} ${294+s*5} ${260+s*41} ${265-s*26+tailWave} ${238+s*61} C${246-s*26+tailWave} ${224+s*75} ${242-s*30} ${245+s*51} ${255-s*39} ${253+s*48}`;
     this.parts.tail.setAttribute('d',d);this.parts['tail-light'].setAttribute('d',d);this.parts['tail-shadow'].setAttribute('d',d);
     opacity('sleep-marks',s);
@@ -185,15 +218,15 @@ export class Samtpfote extends HTMLElement {
       tx(`sleep-z-${i}`,`translate(${phase*29*motion} ${26-phase*65*motion}) scale(${.8+phase*.3})`);
     }
     this.parts['sleep-blur'].setAttribute('stdDeviation',String(reduced?0:((this.sleepElapsed%5.1)/5.1)*1.5));
-    const dreamAge=this.sleepElapsed-8,dreamPhase=dreamAge>=0?(dreamAge%24)/7:2;
+    const dreamAge=this.sleepElapsed-settings.dreams.delay,dreamPhase=dreamAge>=0?(dreamAge%settings.dreams.interval)/settings.dreams.duration:2;
     const dream=dreamPhase<=1?Math.pow(Math.sin(dreamPhase*Math.PI),2):0;
-    opacity('dream-cloud',dream*s);
+    opacity('dream-cloud',settings.dreams.enabled?dream*s:0);
     tx('dream-cloud',`translate(${Math.sin(t*.6)*2*motion} ${7-dream*10+Math.sin(t*.7)*2*motion})`);
     opacity('hearts',pet);
     for(let i=0;i<4;i++){
       const phase=((t+i*.67)%2.7)/2.7,side=i%2===0?-1:1;
       opacity(`heart-${i}`,Math.pow(Math.sin(phase*Math.PI),.8));
-      tx(`heart-${i}`,`translate(${158+side*(70+phase*30)+Math.sin(t*2+i)*6*motion} ${145-phase*110*motion}) rotate(${side*(12+Math.sin(t+i)*10*motion)}) scale(${(.6+i*.12)*(0.7+phase*.35)})`);
+      tx(`heart-${i}`,`translate(${158+side*(70+phase*30)+Math.sin(t*2+i)*6*motion} ${145-phase*110*motion}) rotate(${side*(12+Math.sin(t+i)*10*motion)}) scale(${(.6+i*.12)*(0.7+phase*.35)*settings.motion.heartScale})`);
     }
     opacity('glass-paws',Math.min(1,swat*3));
     const l=p.leftReach,r=p.rightReach;

@@ -4,7 +4,7 @@
   import { eyeStudyArt, lidPath } from './eye-art.js';
   import { CAT_NAME } from './config.js';
   import { clamp, follow } from './behavior.js';
-  let root, pupil = $state(40), automatic = $state(true), blink = ()=>{};
+  let root, automatic = $state(true), blink = ()=>{};
   const original=eyeStudyArt('eye-original'), revised=eyeStudyArt('eye-revised',true);
   onMount(()=>{
     let raf,last=0,blinkStart=-10000,next=performance.now()+3000,gx=0,gy=0,target={x:0,y:0};
@@ -26,8 +26,6 @@
         parts[`lid-${side}`].setAttribute('d',lidPath(cx,Math.max(.005,open)));
         parts[`socket-${side}`].setAttribute('d',lidPath(cx,Math.max(.005,open)));
         parts[`iris-${side}`].setAttribute('transform',`translate(${gx*5} ${gy*3})`);
-        const rx=3+pupil*.145;
-        parts[`pupil-${side}`].setAttribute('d',`M${cx} 120C${cx+rx} 127 ${cx+rx} 157 ${cx} 166C${cx-rx} 157 ${cx-rx} 127 ${cx} 120Z`);
         parts[`reflection-${side}`].setAttribute('transform',`translate(${gx*.8} ${gy*.4})`);
         parts[`upper-${side}`].setAttribute('d',`M${cx-24} 143Q${cx-15} ${143-27*open} ${cx} ${143-27*open}Q${cx+15} ${143-27*open} ${cx+24} 143`);
         parts[`lower-${side}`].setAttribute('d',`M${cx-24} 143Q${cx-15} ${143+25*open} ${cx} ${143+25*open}Q${cx+15} ${143+25*open} ${cx+24} 143`);
@@ -41,7 +39,7 @@
 </script>
 <section bind:this={root} class="eye-study" aria-label="Separate Augenstudie">
   <div class="eye-study-heading"><span class="section-kicker">SEPARATER VERSUCH</span><h1>Ein neuer Blick für {CAT_NAME}.</h1><p>Bewege die Maus und vergleiche das Blinzeln. Die Hauptkatze bleibt unverändert.</p></div>
-  <div class="eye-comparison"><div class="eye-card"><div class="eye-card-title"><strong>Bisher</strong><span>Das Auge wird gestaucht</span></div><div class="eye-original">{@html original}</div></div><div class="eye-card"><div class="eye-card-title"><strong>Lidbewegung</strong><span>Iris und Reflexe bleiben in Form</span></div><div class="eye-revised">{@html revised}</div></div></div>
-  <div class="eye-controls"><button class="primary-button" onclick={()=>blink()}><i class="fa-regular fa-eye" aria-hidden="true"></i> Blinzeln testen</button><label class="toggle-label"><input type="checkbox" bind:checked={automatic}/><span class="toggle-track"></span><span>Natürliches Blinzeln</span></label><div class="pupil-control"><label class="range-label" for="pupil">Pupillenweite <output>{pupil}%</output></label><input id="pupil" type="range" min="0" max="100" bind:value={pupil} style={`--range-fill:${pupil}%`}/></div></div>
-  <p class="eye-note">Die neue Variante hat eine fein strukturierte goldene Iris, eine schlitzförmige Pupille und getrennte Lichtreflexe. Die Lider schließen sich darüber.</p>
+  <div class="eye-comparison"><div class="eye-card"><div class="eye-card-title"><strong>Bisher</strong><span>Das Auge wird gestaucht</span></div><div class="eye-original">{@html original}</div></div><div class="eye-card"><div class="eye-card-title"><strong>Lidbewegung</strong><span>Gleiche Augen, sanfter Lidschluss</span></div><div class="eye-revised">{@html revised}</div></div></div>
+  <div class="eye-controls"><button class="primary-button" onclick={()=>blink()}><i class="fa-regular fa-eye" aria-hidden="true"></i> Blinzeln testen</button><label class="toggle-label"><input type="checkbox" bind:checked={automatic}/><span class="toggle-track"></span><span>Natürliches Blinzeln</span></label></div>
+  <p class="eye-note">Augenform, Pupillen und Lichtreflexe behalten ihren süßen Stil. Beim Blinzeln bewegen sich die Lider darüber, ohne das Augeninnere zu stauchen.</p>
 </section>

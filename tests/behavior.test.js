@@ -43,3 +43,22 @@ test('Die Pfoten erreichen die Scheibe versetzt und bleiben am Arm befestigt',()
  const pose=choreography('swatting',.8);assert.ok(pose.left>pose.right);
  const path=armPath(132,238,120,172,-7);assert.ok(path.startsWith('M123 238'));assert.ok(!path.includes('NaN'));
 });
+
+import { resolveBehavior } from '../src/lib/options.js';
+test('Entwicklereinstellungen sind unabhängig und unvollständige Änderungen erhalten bestehende Werte',()=>{
+ const first=resolveBehavior({avoidance:{delay:3,distance:100}});
+ const second=resolveBehavior({avoidance:{returnDelay:12}},first);
+ assert.equal(second.avoidance.delay,3);assert.equal(second.avoidance.distance,100);assert.equal(second.avoidance.returnDelay,12);
+ second.avoidance.delay=99;assert.equal(first.avoidance.delay,3);assert.equal(resolveBehavior().avoidance.delay,3);
+});
+test('Ungültige Konfigurationen erzeugen keine ungültigen Bewegungswerte',()=>{
+ const config=resolveBehavior({avoidance:{speed:NaN},blink:{minInterval:10,maxInterval:2},idle:{drowsyRatio:9}});
+ assert.equal(config.avoidance.speed,2.5);assert.equal(config.blink.maxInterval,10);assert.equal(config.idle.drowsyRatio,.95);
+});
+
+import { anchorPlacement, coordinate } from '../src/lib/placement.js';
+test('Elementanker hält die Pfoten auf der gewünschten Kante',()=>{
+ const p=anchorPlacement({left:100,right:500,top:300,bottom:500,width:400,height:200},{width:170,height:180.625},'top-right',-12,0);
+ assert.equal(p.x,318);assert.ok(Math.abs(p.y+180.625*(312/340)-300)<1e-9);
+ assert.equal(coordinate(120),'120px');assert.equal(coordinate('50vw'),'50vw');
+});

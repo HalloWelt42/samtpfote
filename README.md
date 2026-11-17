@@ -22,7 +22,7 @@ Das Komplettpaket entpacken und den enthaltenen Ordner `samtpfote` im öffentlic
   position="bottom-right"
   coat="black"
   sleep-after="35"
-  style="--cat-size:220px; --cat-offset:16px"
+  style="--cat-size:170px; --cat-offset:16px"
 ></samt-pfote>
 ```
 
@@ -42,7 +42,7 @@ Den vollständigen Ordner `src/lib` übernehmen. Das Wohnzimmer `Room.svelte` wi
 
 <Cat
   bind:this={cat}
-  size={220}
+  size={170}
   position="bottom-right"
   coat="black"
   sleepAfter={35}
@@ -73,3 +73,7 @@ Die Bewegung basiert auf einer gemeinsamen, zeitabhängigen Bildschleife. Körpe
 ## Gesicherter erster Entwurf
 
 Der unveränderte erste Entwurf ist im Versionsstand `v0.1-erster-entwurf` gesichert. Zusätzlich enthält `referenz/` die damalige Katzenzeichnung, Bewegungssteuerung und Oberfläche. Diese Dateien dienen als Vergleich und werden nicht in die aktuelle Demo eingebunden.
+
+## Entwicklereinstellungen
+
+Spezielle Verhaltensdetails wie Ausweichzeit, Strecke, Rückkehr, Blickverfolgung, Blinzeln, Aktionsdauern und Träume werden über `configure()` oder die Eigenschaft `behavior` eingestellt. Diese Optionen erscheinen nicht als zusätzliche Bedienelemente in der Demo. Die vollständige Beschreibung steht in [ENTWICKLER.md](./ENTWICKLER.md).

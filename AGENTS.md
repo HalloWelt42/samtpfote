@@ -15,5 +15,8 @@
 - Die linke Leiste zeigt nur "Das ist {CAT_NAME}" und die Verhaltensauswahl. Keine zusätzlichen Begrüßungstexte oder Verweise dort.
 - Fellfarben und Lichtautomatik liegen im Kopfbereich. Auswahlzustände zeigen nur Farbflächen, keine zusätzlichen Rahmen oder Punkte. Keine senkrechten Spaltentrenner oder dekorativen Trennlinien in der Steuerung.
 - Die rechte Steuerung bleibt kompakt mit 8px oberem und unterem Innenabstand; Scrollen nur bei echtem Platzmangel.
-- Augenänderungen zunächst getrennt in der Augenstudie vergleichen. Die Hauptkatze behält ihre Augen bis zur ausdrücklichen Übernahmeentscheidung.
+- Die Augenstudie ist aus der Oberfläche entfernt. Die Hauptkatze behält ihre ursprüngliche süße Augenform; beim Blinzeln wird nur verdeckt, nie das Augeninnere skaliert.
 - Platzmachen wird ausschließlich in den Seitenecken ausgelöst: nach 3 Sekunden Mausaufenthalt in gleicher Höhe sanft nach innen weichen und nach freiem Bereich mit Verzögerung zurückkehren.
+- Die Startgröße der Katze beträgt 170px in Demo, Komponente und Beispielen.
+- Die Augen sollen ihren süßen Stil behalten. Beim Blinzeln schließen sich Lider über Iris, Pupillen und Reflexen, ohne das Augeninnere zu stauchen. Keine separate Augenstudie anzeigen.
+- Spezielle Verhaltensdetails sind für Entwickler konfigurierbar und werden nicht als zusätzliche Demo-Bedienelemente gezeigt.
