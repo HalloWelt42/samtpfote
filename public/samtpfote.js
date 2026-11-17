@@ -201,7 +201,7 @@ class ft extends HTMLElement {
     } else this.nearTime = 0;
     if (this.setState(s), g) return;
     const w = s === "sleeping", A = s === "drowsy";
-    if (this.sleepElapsed = w ? this.sleepElapsed + i : 0, this.audio) {
+    if (this.sleepElapsed = w || this.sleepElapsed > 0 && this.pose.sleep > 0.05 ? this.sleepElapsed + i : 0, this.audio) {
       const r = s === "petting" ? y(Number(this.getAttribute("volume") || 35) / 100, 0, 1) : 0;
       this.audioVolume = u(this.audioVolume, r, s === "petting" ? 3 : 5, i), this.audio.volume = y(this.audioVolume, 0, 1), r === 0 && this.audioVolume < 2e-3 && this.audio.pause();
     }

@@ -106,7 +106,7 @@ export class Samtpfote extends HTMLElement {
     this.setState(state);
     if(paused)return;
     const sleeping=state==='sleeping',drowsy=state==='drowsy';
-    this.sleepElapsed=sleeping?this.sleepElapsed+dt:0;
+    this.sleepElapsed=(sleeping || (this.sleepElapsed>0 && this.pose.sleep>.05))?this.sleepElapsed+dt:0;
     if(this.audio){
       const targetVolume=state==='petting'?clamp(Number(this.getAttribute('volume')||35)/100,0,1):0;
       this.audioVolume=follow(this.audioVolume,targetVolume,state==='petting'?3:5,dt);
