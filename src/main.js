@@ -1,0 +1,10 @@
+import { mount } from 'svelte';
+import '@fontsource/chakra-petch/400.css';
+import '@fontsource/chakra-petch/500.css';
+import '@fontsource/chakra-petch/600.css';
+import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+import '@fortawesome/fontawesome-free/css/solid.min.css';
+import '@fortawesome/fontawesome-free/css/regular.min.css';
+import './style.css';
+import App from './App.svelte';
+mount(App, {target:document.getElementById('app')});
