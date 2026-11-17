@@ -155,7 +155,7 @@ export class Samtpfote extends HTMLElement {
     tx('paw-r',`translate(${p.reach*10} ${p.reach*2}) rotate(${-p.reach*6} 185 248)`);
     const tailWave=Math.sin(t*1.25)*motion*(1-s)*13;
     const d=`M207 286 C${270+s*14} ${312-s*5} ${294+s*5} ${260+s*41} ${265-s*26+tailWave} ${238+s*61} C${246-s*26+tailWave} ${224+s*75} ${242-s*30} ${245+s*51} ${255-s*39} ${253+s*48}`;
-    this.parts.tail.setAttribute('d',d);this.parts['tail-light'].setAttribute('d',d);
+    this.parts.tail.setAttribute('d',d);this.parts['tail-light'].setAttribute('d',d);this.parts['tail-shadow'].setAttribute('d',d);
     opacity('sleep-marks',s);
     for(let i=0;i<3;i++){
       const phase=((this.sleepElapsed+i*1.7)%5.1)/5.1;
@@ -180,19 +180,22 @@ export class Samtpfote extends HTMLElement {
     const rx=188+r*13+gx*7*r,ry=299-r*122-hop*2;
     this.parts['raised-arm-l'].setAttribute('d',armPath(132,238,lx,ly,-7*l));
     this.parts['raised-arm-r'].setAttribute('d',armPath(188,238,rx,ry,7*r));
-    tx('glass-paw-l',`translate(${lx} ${ly}) rotate(${-l*9}) scale(${.65+l*.2} ${.7+l*.16})`);
-    tx('glass-paw-r',`translate(${rx} ${ry}) rotate(${r*9}) scale(${.65+r*.2} ${.7+r*.16})`);
+    tx('glass-paw-l',`translate(${lx} ${ly}) rotate(${-l*9}) scale(${.75+l*.32} ${.78+l*.26})`);
+    tx('glass-paw-r',`translate(${rx} ${ry}) rotate(${r*9}) scale(${.75+r*.32} ${.78+r*.26})`);
     opacity('glass-ripples',(poseAction.press||0)*.22);
     tx('glass-ripples',`translate(0 -18)`);
     opacity('paw-l',1-Math.max(l,gr));opacity('paw-r',1-r);
     tx('shadow',`translate(160 312) scale(${1+s*.35+st*.08} ${1-swat*.2}) translate(-160 -312)`);
     const night=this.getAttribute('lighting')==='night';
+    const tailProjection=night?.4:.24;
+    tx('tail-shadow',`matrix(1 0 ${-tailProjection} -.16 ${312*tailProjection} ${312*1.16+2})`);
+    opacity('tail-shadow',night?.27:.18);
     opacity('shadow',(night?.43:.33)-swat*.05);opacity('cast-shadow',(night?.23:.16)+st*.03);
     tx('cast-shadow',`translate(160 312) skewX(${night?22:10}) scale(${night?1.18:1} ${night?1.15:.85}) translate(-160 -312)`);
     const groomX=133+gr*14+p.wipe*((poseAction.side||0)?29:-24),groomY=300-gr*108-p.wipe*39;
     opacity('groom-limb',Math.min(1,gr*4));
     this.parts['groom-arm'].setAttribute('d',armPath(133,237,groomX,groomY,-13*gr));
-    tx('groom-hand',`translate(${groomX} ${groomY}) rotate(${-gr*12-p.wipe*17})`);
+    tx('groom-hand',`translate(${groomX} ${groomY}) rotate(${-gr*12-p.wipe*17}) scale(1.12)`);
     opacity('tongue',(poseAction.lick||0)*Math.max(gr,p.chest,p.flank));
     tx('tongue',`translate(-3 ${(poseAction.lick||0)*2})`);
     tx('whiskers',`translate(0 ${Math.sin(t*2.2)*.4*motion})`);
