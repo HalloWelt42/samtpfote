@@ -9,3 +9,8 @@ export function coordinate(value, fallback = '16px') {
   const text=String(value).trim();
   return /^-?(?:\d+\.?\d*|\.\d+)$/.test(text)?`${text}px`:text;
 }
+
+export function cornerShift(position, shift, homeLeft, width, viewportWidth) {
+  if(position.endsWith('left'))return Math.min(Math.max(0,shift),Math.max(0,viewportWidth-homeLeft-width));
+  return Math.max(Math.min(0,shift),-Math.max(0,homeLeft));
+}

@@ -4,7 +4,7 @@ import { coatStyles } from './coats.js';
 import { CAT_NAME, ATTRIBUTION } from './config.js';
 import { choreography, armPath, torsoPath } from './motion.js';
 import { DEFAULT_BEHAVIOR, resolveBehavior } from './options.js';
-import { anchorPlacement, coordinate } from './placement.js';
+import { anchorPlacement, coordinate, cornerShift } from './placement.js';
 import { clamp, follow, idleState, stateLabels } from './behavior.js';
 let serial = 0;
 const styles = `:host{position:relative;display:block;width:var(--cat-size,170px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,10000);transform:translate3d(var(--cat-avoid-x,0px),0,0);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}:host([data-placement="free"]),:host([data-placement="anchor"]){position:fixed;left:var(--cat-position-x,16px);top:var(--cat-position-y,16px);right:auto;bottom:auto;margin:0;transform:none;z-index:var(--cat-z-index,10000);pointer-events:none}:host([data-placement="missing"]){visibility:hidden;position:fixed;left:0;top:0}:host([data-placement="free"]) button,:host([data-placement="anchor"]) button{pointer-events:auto}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,170px),35vw)}}`;
@@ -50,7 +50,11 @@ export class Samtpfote extends HTMLElement {
     this.start();
   }
   disconnectedCallback() { this.abort?.abort();cancelAnimationFrame(this.raf);this.stopPurr();this._anchorObserver?.disconnect();this._observedAnchor=null; }
-  attributeChangedCallback(attr) {
+  attributeChangedCallback(attr, previous, next) {
+    if(attr==='position' && previous!==next){
+      Object.assign(this.avoid,{x:0,target:0,dwell:0,clear:0,enteredAt:0});
+      this.style.setProperty('--cat-avoid-x','0px');
+    }
     if(attr==='sound-src' || attr==='paused')this.stopPurr();
     if(attr==='cat-name') { const name=this.getAttribute('cat-name')||CAT_NAME;this.shadowRoot.querySelector('button').setAttribute('aria-label',`${name} streicheln`);this.shadowRoot.querySelector('svg').setAttribute('aria-label',`${name}, eine kleine Katze mit großen Augen`);}
     if(this.isConnected){this.updatePlacement();this.start();}
@@ -150,6 +154,12 @@ export class Samtpfote extends HTMLElement {
       }
       if(avoid.clear>settings.avoidance.returnDelay && eligible)avoid.target=0;
     }else {avoid.target=0;avoid.dwell=0;avoid.clear=0;avoid.enteredAt=0;}
+    if(dock){
+      const rect=this.getBoundingClientRect(),homeLeft=rect.left-avoid.x;
+      avoid.target=cornerShift(dock,avoid.target,homeLeft,rect.width,innerWidth);
+      const bounded=cornerShift(dock,avoid.x,homeLeft,rect.width,innerWidth);
+      if(bounded!==avoid.x){avoid.x=bounded;this.style.setProperty('--cat-avoid-x',`${bounded}px`);}
+    }
     const before=avoid.x;avoid.x=follow(avoid.x,avoid.target,settings.avoidance.speed,dt);
     if(Math.abs(avoid.x-avoid.target)<.05)avoid.x=avoid.target;
     this.style.setProperty('--cat-avoid-x',`${avoid.x.toFixed(2)}px`);

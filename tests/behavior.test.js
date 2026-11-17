@@ -56,9 +56,23 @@ test('Ungültige Konfigurationen erzeugen keine ungültigen Bewegungswerte',()=>
  assert.equal(config.avoidance.speed,2.5);assert.equal(config.blink.maxInterval,10);assert.equal(config.idle.drowsyRatio,.95);
 });
 
-import { anchorPlacement, coordinate } from '../src/lib/placement.js';
+import { anchorPlacement, coordinate, cornerShift } from '../src/lib/placement.js';
 test('Elementanker hält die Pfoten auf der gewünschten Kante',()=>{
  const p=anchorPlacement({left:100,right:500,top:300,bottom:500,width:400,height:200},{width:170,height:180.625},'top-right',-12,0);
  assert.equal(p.x,318);assert.ok(Math.abs(p.y+180.625*(312/340)-300)<1e-9);
  assert.equal(coordinate(120),'120px');assert.equal(coordinate('50vw'),'50vw');
+});
+
+test('Ein Wechsel zur linken Ecke übernimmt keine negative Ausweichverschiebung',()=>{
+ for(const position of ['top-left','bottom-left']){
+   assert.equal(cornerShift(position,-85,16,170,800),0);
+   assert.equal(cornerShift(position,85,16,170,800),85);
+   assert.equal(cornerShift(position,900,16,170,800),614);
+ }
+});
+test('Die rechten Ecken bleiben auch nach Größenänderungen innerhalb des Bildes',()=>{
+ for(const position of ['top-right','bottom-right']){
+   assert.equal(cornerShift(position,85,614,170,800),0);
+   assert.equal(cornerShift(position,-900,614,170,800),-614);
+ }
 });
