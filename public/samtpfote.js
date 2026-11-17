@@ -1,82 +1,171 @@
-function F(i) {
-  return `<svg viewBox="0 0 320 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eine kleine schwarze Katze mit goldenen Augen">
+const F = "Miso", et = "samtpfote", it = "hallowelt42", j = `${it} / ${et}`;
+function rt(a) {
+  return String(a).replace(/[&<>"']/g, (t) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[t]);
+}
+function st(a, t = F) {
+  return `<svg viewBox="0 0 320 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${rt(t)}, eine kleine Katze mit großen Augen">
 <defs>
- <radialGradient id="${i}-fur" cx=".3" cy=".15" r=".9"><stop stop-color="#343844"/><stop offset=".5" stop-color="#1c1e28"/><stop offset="1" stop-color="#11121b"/></radialGradient>
- <radialGradient id="${i}-head" cx=".32" cy=".12" r="1"><stop stop-color="#343845"/><stop offset=".55" stop-color="#20222c"/><stop offset="1" stop-color="#13151e"/></radialGradient>
- <radialGradient id="${i}-iris" cx=".4" cy=".3" r=".8"><stop stop-color="#fff3b8"/><stop offset=".48" stop-color="#e8d77c"/><stop offset="1" stop-color="#b29440"/></radialGradient>
- <linearGradient id="${i}-ear" x2="1" y2="1"><stop stop-color="#dba6a0"/><stop offset="1" stop-color="#805c6a"/></linearGradient>
- <clipPath id="${i}-eye-l"><ellipse cx="119" cy="143" rx="23" ry="26"/></clipPath>
- <clipPath id="${i}-eye-r"><ellipse cx="198" cy="143" rx="23" ry="26"/></clipPath>
+ <filter id="${a}-contact-soft" x="-60%" y="-120%" width="220%" height="340%"><feGaussianBlur stdDeviation="2"/></filter>
+ <filter id="${a}-cast-soft" x="-60%" y="-120%" width="220%" height="340%"><feGaussianBlur stdDeviation="4"/></filter>
+ <filter id="${a}-dream-blur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur data-part="sleep-blur" stdDeviation="0"/></filter>
+ <radialGradient id="${a}-fur" cx=".3" cy=".15" r=".9"><stop stop-color="var(--cat-fur-top,#35312e)"/><stop offset=".5" stop-color="var(--cat-fur-mid,#191715)"/><stop offset="1" stop-color="var(--cat-fur-base,#0e0d0c)"/></radialGradient>
+ <radialGradient id="${a}-head" cx=".32" cy=".12" r="1"><stop stop-color="var(--cat-head-top,#38332f)"/><stop offset=".55" stop-color="var(--cat-head-mid,#1b1917)"/><stop offset="1" stop-color="var(--cat-head-base,#11100e)"/></radialGradient>
+ <radialGradient id="${a}-iris" cx=".4" cy=".3" r=".8"><stop stop-color="var(--cat-iris-top,#fff3b8)"/><stop offset=".48" stop-color="var(--cat-iris-mid,#e8d77c)"/><stop offset="1" stop-color="var(--cat-iris-base,#b29440)"/></radialGradient>
+ <linearGradient id="${a}-ear" x2="1" y2="1"><stop stop-color="#dba6a0"/><stop offset="1" stop-color="#805c6a"/></linearGradient>
+ <clipPath id="${a}-eye-l"><ellipse cx="119" cy="143" rx="23" ry="26"/></clipPath>
+ <clipPath id="${a}-eye-r"><ellipse cx="198" cy="143" rx="23" ry="26"/></clipPath>
 </defs>
-<ellipse data-part="shadow" cx="166" cy="312" rx="86" ry="9" fill="#292139" opacity=".12"/>
+<path data-part="cast-shadow" d="M105 307Q162 300 212 308Q240 315 286 325Q301 336 263 335L162 325Q104 324 105 307Z" fill="#27190d" opacity=".2" filter="url(#${a}-cast-soft)"/>
+<ellipse data-part="shadow" cx="160" cy="312" rx="65" ry="7" fill="#1c1209" opacity=".35" filter="url(#${a}-contact-soft)"/>
 <g data-part="root">
-<path data-part="tail" d="M207 286 C270 312 294 260 265 238 C246 224 242 245 255 253" stroke="#191b25" stroke-width="24" stroke-linecap="round"/>
-<path data-part="tail-light" d="M207 282 C270 308 294 256 265 234 C246 220 242 241 255 249" stroke="#3a3e4a" stroke-opacity=".4" stroke-width="3" stroke-linecap="round"/>
+<path data-part="tail" d="M207 286 C270 312 294 260 265 238 C246 224 242 245 255 253" stroke="var(--cat-tail,#171512)" stroke-width="24" stroke-linecap="round"/>
+<path data-part="tail-light" d="M207 282 C270 308 294 256 265 234 C246 220 242 241 255 249" stroke="var(--cat-tail-light,#45403a)" stroke-opacity=".4" stroke-width="3" stroke-linecap="round"/>
 <g data-part="body">
- <path d="M128 188 C110 195 95 228 89 267 C83 298 104 311 158 311 C211 312 232 299 224 269 C217 235 209 203 189 188Z" fill="url(#${i}-fur)"/>
- <ellipse cx="111" cy="282" rx="26" ry="28" fill="#20222d"/>
- <ellipse cx="208" cy="282" rx="26" ry="28" fill="#171923"/>
+ <path data-part="torso" d="M129 190 C119 192 115 203 111 214 Q102 224 101 239 C90 251 85 272 91 290 C95 306 119 311 157 311 C193 313 221 306 225 290 C232 273 221 248 215 238 Q214 223 204 213 C201 201 193 192 187 190 Q158 203 129 190Z" fill="url(#${a}-fur)"/>
+ <path d="M112 252 C94 253 86 272 91 289 Q85 300 96 306 Q111 313 129 305 Q141 298 131 281 C129 265 124 254 112 252Z" fill="var(--cat-fur-detail,#211e1b)"/><path d="M96 301 Q97 297 99 297 M104 305 Q104 300 107 300" stroke="var(--cat-toe,#796c5e)" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/>
+ <path d="M207 253 C224 252 233 275 226 289 Q232 301 223 306 Q209 313 191 305 Q182 299 188 282 C189 267 196 256 207 253Z" fill="var(--cat-fur-shadow,#191613)"/><path d="M218 302 Q218 298 215 298 M210 306 Q210 302 208 301" stroke="var(--cat-toe,#796c5e)" stroke-opacity=".35" stroke-width="1.3" stroke-linecap="round"/>
  <path d="M133 211 Q148 225 161 215 Q174 223 186 209" stroke="#3c404c" stroke-width="1.5" opacity=".65"/>
- <path d="M122 232 Q116 266 125 298 M192 232 Q199 269 190 298" stroke="#0d1018" stroke-width="3" stroke-linecap="round"/>
- <g data-part="paw-l"><path d="M123 257 Q116 272 119 295 Q113 303 118 309 Q127 316 146 310 L148 259" fill="#242733"/><path d="M125 305 L125 310 M133 305 L133 311" stroke="#52515c" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/></g>
- <g data-part="paw-r"><path d="M174 258 L174 302 Q169 312 180 313 Q201 316 204 308 Q204 303 198 298 L195 257" fill="#20232e"/><path d="M182 306 L182 312 M191 306 L191 312" stroke="#52515c" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/></g>
- <path d="M101 245 Q94 266 99 274 M213 245 Q222 270 216 282" stroke="#565765" stroke-opacity=".4" stroke-linecap="round" stroke-width="2"/>
+ <path d="M122 232 Q116 266 125 298 M192 232 Q199 269 190 298" stroke="var(--cat-line,#0d0c0a)" stroke-width="3" stroke-linecap="round"/>
+ <g data-part="paw-l"><path d="M124 245 C123 260 120 277 122 291 Q121 296 118 299 C113 304 115 310 120 312 Q125 315 130 313 Q137 317 143 312 C149 312 151 307 148 302 Q145 297 147 288 L149 248" fill="var(--cat-fur-detail,#211e1b)"/><path d="M123 302 Q120 305 122 310 M132 303 Q129 308 131 313 M141 303 Q139 308 141 312" stroke="var(--cat-toe,#65594e)" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/></g>
+ <g data-part="paw-r"><path d="M172 248 L174 287 Q177 297 174 301 C168 309 173 314 180 313 Q187 317 192 313 Q200 315 203 310 C207 304 203 300 199 297 Q197 285 197 272 L194 245" fill="var(--cat-paw,#1f1c18)"/><path d="M180 303 Q177 307 180 312 M188 304 Q186 309 188 314 M197 302 Q195 306 197 312" stroke="var(--cat-toe,#65594e)" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/></g>
+ <path d="M101 245 Q94 266 99 274 M213 245 Q222 270 216 282" stroke="var(--cat-body-light,#6a5f53)" stroke-opacity=".4" stroke-linecap="round" stroke-width="2"/>
 </g>
 <g data-part="head">
- <g data-part="ear-l"><path d="M84 123 Q65 91 77 46 Q80 40 86 47 L128 85Z" fill="#242733" stroke="#3b3d49" stroke-width="1.5"/><path d="M88 91 L83 60 Q100 73 109 89 L98 100Z" fill="url(#${i}-ear)"/><path d="M83 90 L92 82 L88 100" fill="#292b37"/></g>
- <g data-part="ear-r"><path d="M191 86 L230 46 Q236 39 240 46 Q253 89 234 124Z" fill="#1b1e28" stroke="#3b3d49" stroke-width="1.5"/><path d="M213 88 Q221 72 232 60 L231 97 L220 101Z" fill="url(#${i}-ear)"/><path d="M229 86 L236 96 L225 102" fill="#252733"/></g>
- <path d="M82 121 Q89 83 126 80 L139 72 L145 79 L157 69 L165 78 Q219 73 236 116 L248 132 L241 138 L252 151 L241 155 Q248 186 216 201 Q198 213 162 215 Q121 213 101 200 Q70 187 76 157 L65 151 L76 139 L69 133Z" fill="url(#${i}-head)"/>
- <path d="M102 105 Q115 97 129 101 M188 101 Q203 96 216 105" stroke="#535662" stroke-width="2" stroke-linecap="round" opacity=".55"/>
- <g data-part="eye-l"><ellipse cx="119" cy="143" rx="26" ry="29" fill="#0d1018"/><ellipse cx="119" cy="143" rx="23" ry="26" fill="url(#${i}-iris)"/><g clip-path="url(#${i}-eye-l)"><g data-part="pupil-l"><ellipse cx="122" cy="142" rx="13.5" ry="22" fill="#10131a"/><ellipse cx="116" cy="131" rx="5.5" ry="7" fill="#fffef0"/><circle cx="130" cy="151" r="2.4" fill="#fffef0" opacity=".8"/></g></g><path d="M99 152 Q103 165 115 167" stroke="#fff5b8" stroke-width="1.5" opacity=".6" stroke-linecap="round"/></g>
- <g data-part="eye-r"><ellipse cx="198" cy="143" rx="26" ry="29" fill="#0d1018"/><ellipse cx="198" cy="143" rx="23" ry="26" fill="url(#${i}-iris)"/><g clip-path="url(#${i}-eye-r)"><g data-part="pupil-r"><ellipse cx="195" cy="142" rx="13.5" ry="22" fill="#10131a"/><ellipse cx="189" cy="131" rx="5.5" ry="7" fill="#fffef0"/><circle cx="203" cy="151" r="2.4" fill="#fffef0" opacity=".8"/></g></g><path d="M179 152 Q182 164 193 167" stroke="#fff5b8" stroke-width="1.5" opacity=".6" stroke-linecap="round"/></g>
- <g data-part="closed-eyes" opacity="0"><path d="M99 145 Q119 157 139 145 M178 145 Q198 157 218 145" stroke="#8b8586" stroke-width="3" stroke-linecap="round"/></g>
- <ellipse cx="136" cy="178" rx="15" ry="11" fill="#30303c" opacity=".5"/><ellipse cx="180" cy="178" rx="15" ry="11" fill="#30303c" opacity=".5"/>
- <path d="M152 173 Q159 170 165 173 Q166 175 159 180 Q152 177 152 173Z" fill="#d3a5a5"/>
- <path d="M159 180 L159 184 M159 183 Q152 191 146 184 M159 183 Q166 191 172 184" stroke="#ab999e" stroke-width="1.7" stroke-linecap="round"/>
- <g data-part="whiskers" stroke="#93909d" stroke-width="1.4" stroke-linecap="round" opacity=".65"><path d="M119 179 Q90 169 63 172 M118 186 Q89 184 69 193 M197 178 Q227 167 251 171 M198 185 Q227 183 249 193"/></g>
- <path d="M145 202 Q159 207 174 201" stroke="#54515d" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
+ <g data-part="ear-l"><path d="M84 123 Q65 91 77 46 Q80 40 86 47 L128 85Z" fill="var(--cat-fur-detail,#211e1b)" stroke="var(--cat-edge,#3d3730)" stroke-width="1.5"/><path d="M88 91 L83 60 Q100 73 109 89 L98 100Z" fill="url(#${a}-ear)"/><path d="M83 90 L92 82 L88 100" fill="var(--cat-tuft,#29241f)"/></g>
+ <g data-part="ear-r"><path d="M191 86 L230 46 Q236 39 240 46 Q253 89 234 124Z" fill="var(--cat-ear,#1b1815)" stroke="var(--cat-edge,#3d3730)" stroke-width="1.5"/><path d="M213 88 Q221 72 232 60 L231 97 L220 101Z" fill="url(#${a}-ear)"/><path d="M229 86 L236 96 L225 102" fill="var(--cat-tuft,#26211c)"/></g>
+ <path d="M81 122 C86 97 103 84 128 82 Q135 75 142 76 Q137 80 140 83 Q151 78 158 76 Q153 80 155 82 C195 76 225 89 236 120 Q238 127 243 131 L239 132 Q243 141 249 145 Q245 147 241 146 Q244 156 249 161 Q244 163 240 160 C238 181 226 194 207 200 Q191 213 161 214 Q128 213 110 202 C91 196 79 183 77 165 Q72 166 68 162 Q74 156 76 149 Q71 152 67 148 Q74 140 77 134 L73 134 Q78 128 81 122Z" fill="url(#${a}-head)"/>
+ <path d="M102 105 Q115 97 129 101 M188 101 Q203 96 216 105" stroke="var(--cat-brow,#645b50)" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+ <g data-part="eye-l"><ellipse cx="119" cy="143" rx="26" ry="29" fill="var(--cat-line,#0d0c0a)"/><ellipse cx="119" cy="143" rx="23" ry="26" fill="url(#${a}-iris)"/><g clip-path="url(#${a}-eye-l)"><g data-part="pupil-l"><ellipse cx="122" cy="142" rx="13.5" ry="22" fill="#16120e"/><ellipse cx="116" cy="131" rx="5.5" ry="7" fill="#fffef0"/><circle cx="130" cy="151" r="2.4" fill="#fffef0" opacity=".8"/></g></g><path d="M99 152 Q103 165 115 167" stroke="#fff5b8" stroke-width="1.5" opacity=".6" stroke-linecap="round"/></g>
+ <g data-part="eye-r"><ellipse cx="198" cy="143" rx="26" ry="29" fill="var(--cat-line,#0d0c0a)"/><ellipse cx="198" cy="143" rx="23" ry="26" fill="url(#${a}-iris)"/><g clip-path="url(#${a}-eye-r)"><g data-part="pupil-r"><ellipse cx="195" cy="142" rx="13.5" ry="22" fill="#16120e"/><ellipse cx="189" cy="131" rx="5.5" ry="7" fill="#fffef0"/><circle cx="203" cy="151" r="2.4" fill="#fffef0" opacity=".8"/></g></g><path d="M179 152 Q182 164 193 167" stroke="#fff5b8" stroke-width="1.5" opacity=".6" stroke-linecap="round"/></g>
+ <g data-part="closed-eyes" opacity="0"><path d="M99 145 Q119 157 139 145 M178 145 Q198 157 218 145" stroke="#a29380" stroke-width="3" stroke-linecap="round"/></g>
+ <ellipse cx="136" cy="178" rx="15" ry="11" fill="var(--cat-muzzle,#3b332b)" opacity=".5"/><ellipse cx="180" cy="178" rx="15" ry="11" fill="var(--cat-muzzle,#3b332b)" opacity=".5"/>
+ <path d="M152 173 Q159 170 165 173 Q166 175 159 180 Q152 177 152 173Z" fill="var(--cat-nose,#d3a5a5)"/>
+ <path d="M159 180 L159 184 M159 183 Q152 191 146 184 M159 183 Q166 191 172 184" stroke="var(--cat-mouth,#ab999e)" stroke-width="1.7" stroke-linecap="round"/>
+ <path data-part="tongue" d="M152 187Q159 196 162 188" fill="#df9f97" opacity="0"/>
+ <g data-part="whiskers" stroke="var(--cat-whisker,#b0a391)" stroke-width="1.4" stroke-linecap="round" opacity=".65"><path d="M119 179 Q90 169 63 172 M118 186 Q89 184 69 193 M197 178 Q227 167 251 171 M198 185 Q227 183 249 193"/></g>
+ <path d="M113 194 Q119 198 126 198 M192 197 Q199 195 204 192" stroke="#74695d" stroke-width="1" stroke-opacity=".35" stroke-linecap="round"/>
+ <path d="M145 202 Q159 207 174 201" stroke="var(--cat-chin,#64584c)" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
 </g>
 </g>
-<g data-part="hearts" fill="#c89191" opacity="0"><path d="M252 102 C237 89 247 79 254 88 C263 75 277 88 252 102Z"/><path d="M75 58 C63 49 71 41 76 48 C83 38 93 48 75 58Z"/></g>
-<g data-part="sleep-marks" fill="#8a819a" font-family="sans-serif" font-weight="500" opacity="0"><text x="235" y="104" font-size="17">z</text><text x="256" y="82" font-size="23">z</text><text x="278" y="55" font-size="30">z</text></g>
+<g data-part="hearts" opacity="0" aria-hidden="true">
+ <g data-part="heart-0"><path d="M0 9 C-30 -9 -13 -29 0 -15 C13 -29 30 -9 0 9Z" fill="#df969e"/><path d="M-12 -14Q-16 -11 -13 -6" stroke="#ffe3dd" stroke-width="2" stroke-linecap="round"/></g>
+ <g data-part="heart-1"><path d="M0 9 C-30 -9 -13 -29 0 -15 C13 -29 30 -9 0 9Z" fill="#e8b1a0"/></g>
+ <g data-part="heart-2"><path d="M0 9 C-30 -9 -13 -29 0 -15 C13 -29 30 -9 0 9Z" fill="#cb8798"/></g>
+ <g data-part="heart-3"><path d="M0 9 C-30 -9 -13 -29 0 -15 C13 -29 30 -9 0 9Z" fill="#e9b3b5"/></g>
+</g>
+<g data-part="groom-limb" opacity="0" aria-hidden="true">
+ <path data-part="groom-arm" fill="var(--cat-fur-detail,#211e1b)" stroke="var(--cat-edge,#3d3730)" stroke-opacity=".4" stroke-width="1"/>
+ <g data-part="groom-hand"><path d="M-11 12Q-18 2 -13 -8Q-10 -17 -5 -12Q0 -20 5 -12Q15 -14 16 -4Q20 5 11 13Q0 18 -11 12Z" fill="var(--cat-fur-detail,#211e1b)"/><path d="M-8 -8Q-5 -3 -6 0 M0 -11V-3 M8 -8L7 -1" stroke="var(--cat-toe,#65594e)" stroke-opacity=".7" stroke-linecap="round" stroke-width="1.1"/></g>
+</g>
+<g data-part="glass-paws" opacity="0" aria-hidden="true">
+ <path data-part="raised-arm-l" fill="var(--cat-fur-detail,#211e1b)" stroke="var(--cat-edge,#3d3730)" stroke-width="1" stroke-opacity=".5"/>
+ <path data-part="raised-arm-r" fill="var(--cat-paw,#1f1c18)" stroke="var(--cat-edge,#3d3730)" stroke-width="1" stroke-opacity=".5"/>
+ <g data-part="glass-paw-l"><path d="M-16 11C-24 4 -21 -10 -13 -10Q-13 -23 -5 -20Q3 -30 10 -19Q23 -22 24 -8Q31 -2 24 9Q24 21 12 24Q4 29 -6 24Q-19 25 -16 11Z" fill="var(--cat-fur-detail,#211e1b)" stroke="var(--cat-edge,#3d3730)" stroke-width="1"/><path d="M-4 2Q2 -5 9 2Q20 13 11 17Q5 21 0 17Q-12 21 -12 11Q-10 5 -4 2Z" fill="#d89d96"/><ellipse cx="-13" cy="-3" rx="4.3" ry="6.1" fill="#e6b0a7" transform="rotate(-22 -13 -3)"/><ellipse cx="2" cy="-11" rx="4.5" ry="6.7" fill="#e6b0a7"/><ellipse cx="17" cy="-4" rx="4.3" ry="6.1" fill="#e6b0a7" transform="rotate(22 17 -4)"/><path d="M-4 10Q-1 6 3 7" stroke="#f7ccc2" stroke-width="1.6" stroke-linecap="round"/></g>
+ <g data-part="glass-paw-r"><path d="M-16 11C-24 4 -21 -10 -13 -10Q-13 -23 -5 -20Q3 -30 10 -19Q23 -22 24 -8Q31 -2 24 9Q24 21 12 24Q4 29 -6 24Q-19 25 -16 11Z" fill="var(--cat-paw,#1f1c18)" stroke="var(--cat-edge,#3d3730)" stroke-width="1"/><path d="M-4 2Q2 -5 9 2Q20 13 11 17Q5 21 0 17Q-12 21 -12 11Q-10 5 -4 2Z" fill="#d89d96"/><ellipse cx="-13" cy="-3" rx="4.3" ry="6.1" fill="#e6b0a7" transform="rotate(-22 -13 -3)"/><ellipse cx="2" cy="-11" rx="4.5" ry="6.7" fill="#e6b0a7"/><ellipse cx="17" cy="-4" rx="4.3" ry="6.1" fill="#e6b0a7" transform="rotate(22 17 -4)"/><path d="M-4 10Q-1 6 3 7" stroke="#f7ccc2" stroke-width="1.6" stroke-linecap="round"/></g>
+ <g data-part="glass-ripples" stroke="#e7e9e1" stroke-width="1" fill="none"><ellipse cx="120" cy="190" rx="25" ry="23"/><ellipse cx="202" cy="190" rx="25" ry="23"/></g>
+</g>
+<g data-part="sleep-marks" fill="var(--cat-sleep-ink,#8a819a)" font-family="sans-serif" font-weight="500" opacity="0" aria-hidden="true">
+ <g data-part="sleep-z-0" filter="url(#${a}-dream-blur)"><text x="233" y="133" font-size="14">z</text></g>
+ <g data-part="sleep-z-1" filter="url(#${a}-dream-blur)"><text x="233" y="133" font-size="18">z</text></g>
+ <g data-part="sleep-z-2" filter="url(#${a}-dream-blur)"><text x="233" y="133" font-size="22">z</text></g>
+</g>
+<g data-part="dream-cloud" opacity="0" aria-hidden="true">
+ <circle cx="213" cy="146" r="3" fill="#fffaf0" fill-opacity=".8"/>
+ <circle cx="224" cy="129" r="5" fill="#fffaf0" fill-opacity=".85"/>
+ <path d="M224 111C211 114 203 104 208 95C193 91 200 76 210 75C207 60 222 51 234 56C243 41 262 44 267 55C280 52 292 63 287 75C302 81 297 99 285 101C285 114 269 119 259 112C247 124 229 123 224 111Z" fill="#fffaf0" fill-opacity=".94" stroke="#c6c4b3" stroke-width="1"/>
+ <path d="M250 62Q249 50 261 48Q276 47 272 36" stroke="#8d9888" stroke-width="2" stroke-linecap="round"/>
+ <g transform="rotate(20 250 87)"><rect x="235" y="66" width="30" height="40" rx="14" fill="#a7b49a" stroke="#718568" stroke-width="1.3"/><path d="M250 67V83 M235 82H265" stroke="#718568" stroke-width="1.2"/><rect x="247.8" y="71" width="4.4" height="9" rx="2.2" fill="#e7d396"/><path d="M241 89Q239 96 243 99" stroke="#d2ddc6" stroke-width="2" stroke-linecap="round"/></g>
+ <path d="M221 66L223 61 M217 63L227 64 M280 101L281 96 M277 98L285 99" stroke="#c9b67b" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+<text data-part="credit" x="160" y="335" text-anchor="middle" font-family="sans-serif" font-size="8" fill="var(--cat-credit,#85877b)" letter-spacing=".4">${j}</text>
 </svg>`;
 }
-const p = (i, t, a) => Math.max(t, Math.min(a, i)), d = (i, t, a, l) => t + (i - t) * Math.exp(-a * l);
-function P(i, t) {
-  return i >= t ? "sleeping" : i >= t * 0.62 ? "drowsy" : "curious";
+const ot = `
+:host([coat="cream"]){--cat-fur-top:#f5e8d2;--cat-fur-mid:#e5d2ae;--cat-fur-base:#bfa783;--cat-head-top:#fff2db;--cat-head-mid:#e9d6b5;--cat-head-base:#c5ab87;--cat-tail:#ceb58f;--cat-tail-light:#f5e4c9;--cat-fur-detail:#e3c9a3;--cat-fur-shadow:#c9af89;--cat-paw:#dcc29d;--cat-line:#a98f6d;--cat-ear:#d5ba97;--cat-edge:#bd9f7b;--cat-tuft:#e3c8a4;--cat-brow:#b99d7b;--cat-muzzle:#f4e6d0;--cat-whisker:#8e7b68;--cat-nose:#b88283;--cat-mouth:#886a65;--cat-chin:#aa8e72;--cat-toe:#9a8064;--cat-body-light:#f4e4c8;--cat-iris-top:#e4efbd;--cat-iris-mid:#a6bb72;--cat-iris-base:#6b8849;--cat-credit:#9d9d8b}
+:host([coat="smoke"]){--cat-fur-top:#a39b8f;--cat-fur-mid:#82786a;--cat-fur-base:#594f43;--cat-head-top:#b2a799;--cat-head-mid:#908576;--cat-head-base:#645749;--cat-tail:#746555;--cat-tail-light:#baaa96;--cat-fur-detail:#928471;--cat-fur-shadow:#6c5d4d;--cat-paw:#887763;--cat-line:#514333;--cat-ear:#87745f;--cat-edge:#77644f;--cat-tuft:#9a8870;--cat-brow:#cfbfa9;--cat-muzzle:#b5a48e;--cat-whisker:#e5d5b9;--cat-nose:#d0a093;--cat-mouth:#d7b8a1;--cat-chin:#cab79e;--cat-toe:#d9c7ae;--cat-body-light:#e1d0b6}
+@media(prefers-color-scheme:dark){:host([coat="auto"]),:host(:not([coat])){--cat-fur-top:#f5e8d2;--cat-fur-mid:#e5d2ae;--cat-fur-base:#bfa783;--cat-head-top:#fff2db;--cat-head-mid:#e9d6b5;--cat-head-base:#c5ab87;--cat-tail:#ceb58f;--cat-tail-light:#f5e4c9;--cat-fur-detail:#e3c9a3;--cat-fur-shadow:#c9af89;--cat-paw:#dcc29d;--cat-line:#a98f6d;--cat-ear:#d5ba97;--cat-edge:#bd9f7b;--cat-tuft:#e3c8a4;--cat-brow:#b99d7b;--cat-muzzle:#f4e6d0;--cat-whisker:#8e7b68;--cat-nose:#b88283;--cat-mouth:#886a65;--cat-chin:#aa8e72;--cat-toe:#9a8064;--cat-body-light:#f4e4c8;--cat-iris-top:#e4efbd;--cat-iris-mid:#a6bb72;--cat-iris-base:#6b8849;--cat-credit:#9d9d8b}}
+`, y = (a, t, i) => Math.max(t, Math.min(i, a)), u = (a, t, i, n) => t + (a - t) * Math.exp(-i * n);
+function lt(a, t) {
+  return a >= t ? "sleeping" : a >= t * 0.62 ? "drowsy" : "curious";
 }
-const U = { curious: "Neugierig", drowsy: "Schläfrig", sleeping: "Im Traumland", waking: "Wird langsam wach", petting: "Genießt die Streicheleinheit", stretching: "Streckt sich", grooming: "Putzt die Pfote", watching: "Schaut sich um" };
-let G = 0;
-const Z = ':host{display:block;width:var(--cat-size,220px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,50);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}@media(max-width:600px){:host([position]){width:min(var(--cat-size,180px),35vw)}}';
-class W extends HTMLElement {
-  static observedAttributes = ["sleep-after", "paused"];
+const nt = { curious: "Neugierig", drowsy: "Schläfrig", sleeping: "Im Traumland", waking: "Wird langsam wach", petting: "Genießt die Streicheleinheit", stretching: "Streckt sich", grooming: "Putzt sich in aller Ruhe", watching: "Schaut sich um", swatting: "Oh! Eine Maus vor der Nase" }, V = (a) => {
+  const t = y(a, 0, 1);
+  return t * t * (3 - 2 * t);
+};
+function b(a, t) {
+  if (a <= t[0][0]) return t[0][1];
+  for (let i = 1; i < t.length; i++) if (a <= t[i][0]) {
+    const [n, g] = t[i - 1], [o, s] = t[i];
+    return g + (s - g) * V((a - n) / (o - n));
+  }
+  return t.at(-1)[1];
+}
+function ct(a, t, i = 0) {
+  if (a === "stretching") return {
+    stretch: b(t, [[0, 0], [0.6, 0.08], [1.7, 1], [3.2, 1], [4.5, 0.15], [5.4, 0]]),
+    reach: b(t, [[0, 0], [0.45, 0], [1.3, 1], [3.3, 1], [4.9, 0]]),
+    toes: b(t, [[0, 0], [1.5, 0], [2, 1], [3.2, 0.7], [4.5, 0]])
+  };
+  if (a === "grooming") {
+    const n = i !== 2, g = b(t, n ? [[0, 0], [0.4, 0], [1.1, 1], [6.9, 1], [7.8, 0]] : [[0, 0], [0.4, 0], [1.1, 1], [4.5, 1], [5.3, 0]]), o = n ? [[1.25, 2.65], [4.5, 5.65]] : [[1.25, 2.65]];
+    let s = 0;
+    for (const [L, c] of o) if (t >= L && t <= c) {
+      const E = V((t - L) / 0.2) * V((c - t) / 0.2);
+      s = Math.pow(Math.max(0, Math.sin((t - L) * 10)), 2) * E;
+    }
+    const w = b(t, n ? [[0, 0], [2.8, 0], [3.3, 1], [3.8, 0.12], [4.15, 0.8], [4.5, 0], [5.75, 0], [6.2, 1], [6.7, 0.1], [7.1, 0.75], [7.5, 0]] : [[0, 0], [2.8, 0], [3.3, 1], [3.9, 0.1], [4.3, 0.9], [4.7, 0]]), A = b(t, n ? [[0, 0], [7.6, 0], [8.2, 1], [9.5, 1], [10.3, 0]] : [[0, 0], [5.3, 0], [6, 1], [8, 1], [8.6, 0]]), x = i === 2 ? b(t, [[0, 0], [8.25, 0], [8.9, 1], [10, 1], [10.6, 0]]) : 0, z = (A + x) * Math.pow(Math.max(0, Math.sin(t * 8)), 2), e = t > 10.5 && t < 11.3 ? Math.sin((t - 10.5) * 18) * Math.sin((t - 10.5) / 0.8 * Math.PI) : 0;
+    return { lift: g, lick: Math.max(s, z), wipe: w, chest: A, flank: x, shake: e, side: i === 1 ? 1 : 0 };
+  }
+  return a === "swatting" ? {
+    left: b(t, [[0, 0], [0.25, 0.05], [0.8, 1], [1.45, 1], [1.85, 0.9], [2.25, 1], [2.7, 0.65], [3.5, 0]]),
+    right: b(t, [[0, 0], [0.45, 0], [1.2, 1], [1.75, 0.92], [2.15, 1], [2.8, 0.65], [3.65, 0]]),
+    rise: b(t, [[0, 0], [0.25, -0.1], [0.95, 1], [2.6, 1], [3.7, 0]]),
+    press: b(t, [[0, 0], [0.85, 0], [1.1, 1], [1.45, 0], [1.85, 0.75], [2.2, 0], [2.5, 0.5], [2.85, 0]])
+  } : {};
+}
+function T(a, t, i, n, g = 0) {
+  const o = a + (i - a) * 0.3 + g, s = t + (n - t) * 0.55;
+  return `M${a - 9} ${t} Q${o - 10} ${s} ${i - 10} ${n + 7} Q${i} ${n + 17} ${i + 10} ${n + 7} Q${o + 10} ${s + 3} ${a + 9} ${t + 3}Z`;
+}
+function ht(a, t) {
+  return `M${129 - a * 4 + t * 3} ${190 + a * 12 - t * 7} C${119 - a * 8 + t * 3} ${192 + a * 10 - t * 6} ${115 - a * 10} ${203 + a * 12 - t * 4} ${111 - a * 8} ${214 + a * 8} Q${102 - a * 4} ${224 + a * 6} 101 239 C90 251 85 272 91 290 C95 306 119 311 157 311 C193 313 221 306 225 290 C232 273 221 248 215 238 Q214 223 ${204 + a * 6} ${213 + a * 8} C${201 + a * 7 - t * 3} ${201 + a * 10 - t * 4} ${193 + a * 5 - t * 3} ${192 + a * 10 - t * 6} ${187 + a * 3 - t * 3} ${190 + a * 12 - t * 7} Q158 ${203 + a * 10 - t * 7} ${129 - a * 4 + t * 3} ${190 + a * 12 - t * 7}Z`;
+}
+let dt = 0;
+const pt = ':host{position:relative;display:block;width:var(--cat-size,220px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,50);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,180px),35vw)}}';
+class ft extends HTMLElement {
+  static observedAttributes = ["sleep-after", "paused", "sound-src", "cat-name"];
   constructor() {
-    super(), this.attachShadow({ mode: "open" }), this.shadowRoot.innerHTML = `<style>${Z}</style><button type="button" aria-label="Katze streicheln">${F(`samt-${++G}`)}</button>`, this.parts = Object.fromEntries([...this.shadowRoot.querySelectorAll("[data-part]")].map((t) => [t.dataset.part, t])), this.state = "curious", this.lastActivity = 0, this.lastPointerWake = 0, this.lastFrame = 0, this.time = 0, this.gaze = { x: 0, y: 0 }, this.target = { x: 0, y: 0 }, this.pose = { sleep: 0, blink: 1, pet: 0, stretch: 0, groom: 0, headX: 0, headY: 0 }, this.nextBlink = 2 + Math.random() * 3, this.blinkStart = -100, this.nextAction = 7 + Math.random() * 7, this.actionUntil = 0, this.override = null, this.wakeUntil = 0, this.frame = this.frame.bind(this);
+    super(), this.attachShadow({ mode: "open" }), this.shadowRoot.innerHTML = `<style>${pt}${ot}</style><button type="button" aria-label="${F} streicheln">${st(`samt-${++dt}`)}</button><span class="credit">${j}</span>`, this.parts = Object.fromEntries([...this.shadowRoot.querySelectorAll("[data-part]")].map((t) => [t.dataset.part, t])), this.state = "curious", this.lastActivity = 0, this.lastPointerWake = 0, this.lastFrame = 0, this.time = 0, this.gaze = { x: 0, y: 0 }, this.target = { x: 0, y: 0 }, this.pose = { sleep: 0, blink: 1, pet: 0, stretch: 0, groom: 0, headX: 0, headY: 0 }, this.nextBlink = 2 + Math.random() * 3, this.blinkStart = -100, this.nextAction = 7 + Math.random() * 7, this.actionUntil = 0, this.override = null, this.wakeUntil = 0, this.sleepElapsed = 0, this.nearTime = 0, this.swatCooldown = 0, this.pointer = null, this.audioVolume = 0, this.actionStarted = 0, this.groomVariant = 0, this.groomCount = 0, this.frame = this.frame.bind(this);
   }
   connectedCallback() {
     this.abort?.abort(), this.abort = new AbortController();
     const t = this.abort.signal;
-    this.media = matchMedia("(prefers-reduced-motion: reduce)"), this.lastActivity = performance.now(), this.lastFrame = 0, window.addEventListener("pointermove", (a) => {
-      if (a.pointerType === "touch") return;
-      const l = this.getBoundingClientRect();
-      this.target = { x: p((a.clientX - l.left - l.width * 0.5) / Math.max(120, innerWidth * 0.32), -1, 1), y: p((a.clientY - l.top - l.height * 0.43) / Math.max(100, innerHeight * 0.3), -1, 1) };
-      const f = performance.now();
-      f - this.lastPointerWake > 120 && (this.activity(), this.lastPointerWake = f);
+    this.media = matchMedia("(prefers-reduced-motion: reduce)"), this.lastActivity = performance.now(), this.lastFrame = 0, window.addEventListener("pointermove", (i) => {
+      if (i.pointerType === "touch") return;
+      this.pointer = { x: i.clientX, y: i.clientY };
+      const n = this.getBoundingClientRect();
+      this.target = { x: y((i.clientX - n.left - n.width * 0.5) / Math.max(120, innerWidth * 0.32), -1, 1), y: y((i.clientY - n.top - n.height * 0.43) / Math.max(100, innerHeight * 0.3), -1, 1) };
+      const g = performance.now();
+      g - this.lastPointerWake > 120 && (this.activity(), this.lastPointerWake = g);
     }, { passive: !0, signal: t }), window.addEventListener("scroll", () => this.activity(), { passive: !0, signal: t, capture: !0 }), window.addEventListener("keydown", () => this.activity(), { signal: t }), window.addEventListener("pointerdown", () => this.activity(), { passive: !0, signal: t }), document.addEventListener("visibilitychange", () => {
-      cancelAnimationFrame(this.raf), this.lastFrame = 0, document.hidden || this.start();
+      cancelAnimationFrame(this.raf), this.lastFrame = 0, document.hidden ? this.stopPurr() : this.start();
     }, { signal: t }), this.media.addEventListener("change", () => {
       this.lastFrame = 0, this.start();
     }, { signal: t }), this.shadowRoot.querySelector("button").addEventListener("click", () => this.perform("petting"), { signal: t }), this.start();
   }
   disconnectedCallback() {
-    this.abort?.abort(), cancelAnimationFrame(this.raf);
+    this.abort?.abort(), cancelAnimationFrame(this.raf), this.stopPurr();
   }
-  attributeChangedCallback() {
+  attributeChangedCallback(t) {
+    if ((t === "sound-src" || t === "paused") && this.stopPurr(), t === "cat-name") {
+      const i = this.getAttribute("cat-name") || F;
+      this.shadowRoot.querySelector("button").setAttribute("aria-label", `${i} streicheln`), this.shadowRoot.querySelector("svg").setAttribute("aria-label", `${i}, eine kleine Katze mit großen Augen`);
+    }
     this.isConnected && this.start();
   }
   get sleepAfter() {
     const t = Number(this.getAttribute("sleep-after") || 35);
-    return Number.isFinite(t) ? p(t, 5, 3600) : 35;
+    return Number.isFinite(t) ? y(t, 5, 3600) : 35;
   }
   start() {
     cancelAnimationFrame(this.raf), document.hidden || (this.raf = requestAnimationFrame(this.frame));
@@ -86,39 +175,78 @@ class W extends HTMLElement {
     t < (this.ignoreActivityUntil || 0) || (this.lastActivity = t, (this.override === "sleeping" || this.override === "drowsy") && (this.override = null), (this.state === "sleeping" || this.state === "drowsy") && (this.wakeUntil = t + 2200, this.blinkStart = this.time + 0.7));
   }
   perform(t) {
-    ["curious", "sleeping", "drowsy", "stretching", "grooming", "petting", "auto"].includes(t) && (this.lastActivity = performance.now(), this.override = t === "auto" ? null : t, this.ignoreActivityUntil = t === "sleeping" ? performance.now() + 900 : 0, ["petting", "stretching", "grooming"].includes(t) && (this.actionUntil = performance.now() + (t === "grooming" ? 4800 : 3200)), t === "curious" && (this.wakeUntil = performance.now() + 1800), this.start());
+    ["curious", "sleeping", "drowsy", "stretching", "grooming", "petting", "swatting", "auto"].includes(t) && (this.lastActivity = performance.now(), this.override = t === "auto" ? null : t, this.ignoreActivityUntil = t === "sleeping" ? performance.now() + 900 : 0, this.actionStarted = performance.now(), t === "grooming" && (this.groomVariant = this.groomCount++ % 3), ["petting", "stretching", "grooming", "swatting"].includes(t) && (this.actionUntil = performance.now() + (t === "grooming" ? 12200 : t === "swatting" ? 3900 : t === "stretching" ? 5600 : 4200)), t === "petting" && this.playPurr(), t === "curious" && (this.wakeUntil = performance.now() + 1800), this.start());
+  }
+  playPurr() {
+    const t = this.getAttribute("sound-src");
+    t && ((!this.audio || this.audio.dataset.source !== t) && (this.stopPurr(), this.audio?.remove(), this.audio = new Audio(t), this.audio.dataset.source = t, this.audio.loop = !0, this.audio.preload = "none", this.audio.hidden = !0, this.audio.setAttribute("aria-hidden", "true"), this.shadowRoot.append(this.audio)), this.audio.paused && (this.audio.volume = 0, this.audioVolume = 0, this.audio.play().catch(() => this.dispatchEvent(new CustomEvent("cataudio", { detail: { playing: !1, label: "Das Schnurren konnte nicht gestartet werden." }, bubbles: !0, composed: !0 })))));
+  }
+  stopPurr() {
+    this.audio && (this.audio.pause(), this.audio.volume = 0, this.audioVolume = 0);
   }
   setState(t) {
-    t !== this.state && (this.state = t, this.dispatchEvent(new CustomEvent("catstate", { detail: { state: t, label: U[t] }, bubbles: !0, composed: !0 })));
+    t !== this.state && (this.state = t, this.dispatchEvent(new CustomEvent("catstate", { detail: { state: t, label: nt[t] }, bubbles: !0, composed: !0 })));
   }
   frame(t) {
-    const a = this.lastFrame ? p((t - this.lastFrame) / 1e3, 0, 0.05) : 0.016666666666666666;
+    const i = this.lastFrame ? y((t - this.lastFrame) / 1e3, 0, 0.05) : 0.016666666666666666;
     this.lastFrame = t;
-    const l = this.media.matches, f = this.hasAttribute("paused");
-    f || (this.time += a);
-    const r = this.time;
+    const n = this.media.matches, g = this.hasAttribute("paused");
+    g || (this.time += i);
+    const o = this.time;
     this.override && !["sleeping", "drowsy", "curious"].includes(this.override) && t > this.actionUntil && (this.override = null);
-    let n = this.override || P((t - this.lastActivity) / 1e3, this.sleepAfter);
-    if (!this.override && t < this.wakeUntil && (n = "waking"), !this.override && n === "curious" && r > this.nextAction && !l && !f && (this.override = Math.random() < 0.55 ? "watching" : Math.random() < 0.5 ? "grooming" : "stretching", this.actionUntil = t + 4200, this.nextAction = r + 12 + Math.random() * 15, n = this.override), this.setState(n), f) return;
-    const g = n === "sleeping", $ = n === "drowsy";
-    r > this.nextBlink && (this.blinkStart = r, this.nextBlink = r + 3.5 + Math.random() * 5);
-    const w = r - this.blinkStart, S = w >= 0 && w < 0.26 ? 1 - Math.sin(w / 0.26 * Math.PI) : 1, s = this.pose;
-    s.sleep = d(s.sleep, g ? 1 : $ ? 0.36 : 0, g ? 1.2 : n === "waking" ? 1.05 : 2.5, a), s.blink = d(s.blink, g ? 0 : $ ? 0.3 : n === "petting" ? 0.1 : S, 30, a), s.pet = d(s.pet, n === "petting" ? 1 : 0, 3, a), s.stretch = d(s.stretch, n === "stretching" ? 1 : 0, 2, a), s.groom = d(s.groom, n === "grooming" ? 1 : 0, 3, a);
-    const Q = n === "watching" ? { x: Math.sin(r * 0.8) * 0.7, y: -0.4 } : this.target;
-    this.gaze.x = d(this.gaze.x, Q.x, 6, a), this.gaze.y = d(this.gaze.y, Q.y, 6, a);
-    const x = this.gaze.x * (1 - s.sleep), b = this.gaze.y * (1 - s.sleep), h = l ? 0 : 1, L = Math.sin(r * (g ? 1.7 : 2.2)) * (g ? 1.6 : 0.65) * h, e = s.sleep, c = s.stretch, u = s.groom, y = s.pet, o = (M, v) => this.parts[M].setAttribute("transform", v), m = (M, v) => this.parts[M].setAttribute("opacity", String(v));
-    o("root", `translate(${h * Math.sin(r * 0.44) * 0.7} ${-c * 11})`), o("body", `translate(158 310) scale(${1 + e * 0.28 - c * 0.08} ${1 - e * 0.47 + c * 0.14 + L * 4e-3}) translate(-158 -310)`);
-    const E = (x * 5 + Math.sin(r * 0.65) * 1.1 * h) * (1 - e) - e * 17 + y * -8 + u * 15;
-    o("head", `translate(${x * 5 - e * 26} ${b * 3 + e * 83 - c * 7 + L + u * 15}) rotate(${E} 158 175)`);
-    const k = p(s.blink * (1 - e), 0.015, 1);
-    o("eye-l", `translate(119 143) scale(1 ${k}) translate(-119 -143)`), o("eye-r", `translate(198 143) scale(1 ${k}) translate(-198 -143)`), m("eye-l", p(k * 7, 0, 1)), m("eye-r", p(k * 7, 0, 1)), m("closed-eyes", 1 - p(k * 5, 0, 1)), o("pupil-l", `translate(${x * 9} ${b * 6})`), o("pupil-r", `translate(${x * 9} ${b * 6})`);
-    const A = Math.pow(Math.max(0, Math.sin(r * 1.13)), 18) * 9 * h;
-    o("ear-l", `rotate(${-A + y * 9 - e * 7} 103 105)`), o("ear-r", `rotate(${A * 0.6 - y * 8 + e * 7} 219 105)`), o("paw-l", `translate(${u * 15 - c * 4} ${-u * (30 + Math.sin(r * 9) * 7 * h) + c * 2}) rotate(${u * 25} 130 270)`), o("paw-r", `translate(${c * 6} ${c * 2})`);
-    const C = Math.sin(r * 1.25) * h * (1 - e) * 13, z = `M207 286 C${270 + e * 14} ${312 - e * 5} ${294 + e * 5} ${260 + e * 41} ${265 - e * 26 + C} ${238 + e * 61} C${246 - e * 26 + C} ${224 + e * 75} ${242 - e * 30} ${245 + e * 51} ${255 - e * 39} ${253 + e * 48}`;
-    this.parts.tail.setAttribute("d", z), this.parts["tail-light"].setAttribute("d", z), m("sleep-marks", e * 0.8), o("sleep-marks", `translate(0 ${Math.sin(r * 1.2) * 4 * h + e * 25})`), m("hearts", y * 0.8), o("hearts", `translate(0 ${-y * 12 + Math.sin(r * 2) * 3 * h})`), o("whiskers", `translate(0 ${Math.sin(r * 2.2) * 0.4 * h})`), this.raf = requestAnimationFrame(this.frame);
+    let s = this.override || lt((t - this.lastActivity) / 1e3, this.sleepAfter);
+    if (!this.override && t < this.wakeUntil && (s = "waking"), !this.override && s === "curious" && o > this.nextAction && !n && !g && (this.override = Math.random() < 0.55 ? "watching" : Math.random() < 0.5 ? "grooming" : "stretching", this.actionStarted = t, this.override === "grooming" && (this.groomVariant = Math.floor(Math.random() * 3)), this.actionUntil = t + (this.override === "grooming" ? 12200 : this.override === "stretching" ? 5600 : 4200), this.nextAction = o + 12 + Math.random() * 15, s = this.override), this.pointer && !this.override && !["sleeping", "drowsy", "waking"].includes(s) && !g && !n && t > this.swatCooldown) {
+      const r = this.shadowRoot.querySelector("svg").getBoundingClientRect(), d = Math.min(r.width, r.height * 320 / 340), $ = d * 340 / 320, _ = { x: r.left + (r.width - d) / 2 + d * 0.5, y: r.top + (r.height - $) / 2 + $ * 0.51 }, at = Math.hypot((this.pointer.x - _.x) / (d * 0.25), (this.pointer.y - _.y) / ($ * 0.18)) < 1;
+      this.nearTime = at ? this.nearTime + i : 0, this.nearTime > 1.3 && (this.perform("swatting"), this.swatCooldown = t + 1e4, this.nearTime = 0, s = "swatting");
+    } else this.nearTime = 0;
+    if (this.setState(s), g) return;
+    const w = s === "sleeping", A = s === "drowsy";
+    if (this.sleepElapsed = w ? this.sleepElapsed + i : 0, this.audio) {
+      const r = s === "petting" ? y(Number(this.getAttribute("volume") || 35) / 100, 0, 1) : 0;
+      this.audioVolume = u(this.audioVolume, r, s === "petting" ? 3 : 5, i), this.audio.volume = y(this.audioVolume, 0, 1), r === 0 && this.audioVolume < 2e-3 && this.audio.pause();
+    }
+    o > this.nextBlink && (this.blinkStart = o, this.nextBlink = o + 3.5 + Math.random() * 5);
+    const x = o - this.blinkStart, z = x >= 0 && x < 0.26 ? 1 - Math.sin(x / 0.26 * Math.PI) : 1, e = this.pose;
+    e.sleep = u(e.sleep, w ? 1 : A ? 0.36 : 0, w ? 1.2 : s === "waking" ? 1.05 : 2.5, i), e.blink = u(e.blink, w ? 0 : A ? 0.3 : s === "petting" ? 0.1 : s === "grooming" ? z * 0.55 : s === "stretching" ? z * 0.7 : z, 30, i), e.pet = u(e.pet, s === "petting" ? 1 : 0, 3, i);
+    const L = (t - this.actionStarted) / 1e3, c = ct(s, L, this.groomVariant);
+    e.stretch = u(e.stretch, c.stretch || 0, 10, i), e.groom = u(e.groom, c.lift || 0, 12, i), e.wipe = u(e.wipe || 0, c.wipe || 0, 14, i), e.chest = u(e.chest || 0, c.chest || 0, 9, i), e.flank = u(e.flank || 0, c.flank || 0, 9, i), e.reach = u(e.reach || 0, c.reach || 0, 10, i);
+    const E = s === "grooming" ? { x: -0.25 + (c.side || 0) * 0.6 + e.flank * 0.7, y: 0.6 + e.chest * 0.3 } : s === "watching" ? { x: Math.sin(o * 0.8) * 0.7, y: -0.4 } : this.target;
+    this.gaze.x = u(this.gaze.x, E.x, 6, i), this.gaze.y = u(this.gaze.y, E.y, 6, i);
+    const Q = this.gaze.x * (1 - e.sleep), R = this.gaze.y * (1 - e.sleep), f = n ? 0 : 1, G = Math.sin(o * (w ? 1.7 : 2.2)) * (w ? 1.6 : 0.65) * f, l = e.sleep, k = e.stretch, m = e.groom, P = e.pet;
+    (t - this.actionStarted) / 1e3;
+    const J = Math.max(c.left || 0, c.right || 0);
+    e.swat = u(e.swat || 0, J, 12, i);
+    const C = e.swat, Z = (c.rise || 0) * 3 * f;
+    e.leftReach = u(e.leftReach || 0, c.left || 0, 14, i), e.rightReach = u(e.rightReach || 0, c.right || 0, 14, i);
+    const h = (r, d) => this.parts[r].setAttribute("transform", d), p = (r, d) => this.parts[r].setAttribute("opacity", String(d));
+    h("root", `translate(${f * Math.sin(o * 0.44) * 0.7} ${-Z})`), h("body", `translate(${158 + m * 3 + k * 1.5} 310) scale(${1 + l * 0.28 + k * 0.06 - C * 0.04} ${1 - l * 0.47 - k * 0.08 + C * 0.03 + G * 4e-3}) translate(-158 -310)`), this.parts.torso.setAttribute("d", ht(k, C));
+    const tt = (Q * 5 + Math.sin(o * 0.65) * 1.1 * f) * (1 - l) - l * 17 + P * -8 + m * 10 - e.wipe * 7 - k * 4 + e.chest * 13 + e.flank * 24 + (c.shake || 0) * 2;
+    h("head", `translate(${Q * 5 - l * 26 - k * 3 - m * 8 + e.flank * 15} ${R * 3 + l * 83 + k * 25 + G + m * 9 - e.wipe * 10 - Z * 3 + e.chest * 27 + e.flank * 23 + (c.lick || 0) * 1.2 * f}) rotate(${tt} 158 175)`);
+    const S = y(e.blink * (1 - l), 0.015, 1);
+    h("eye-l", `translate(119 143) scale(1 ${S}) translate(-119 -143)`), h("eye-r", `translate(198 143) scale(1 ${S}) translate(-198 -143)`), p("eye-l", y(S * 7, 0, 1)), p("eye-r", y(S * 7, 0, 1)), p("closed-eyes", 1 - y(S * 5, 0, 1)), h("pupil-l", `translate(${Q * 9} ${R * 6})`), h("pupil-r", `translate(${Q * 9} ${R * 6})`);
+    const U = Math.pow(Math.max(0, Math.sin(o * 1.13)), 18) * 9 * f;
+    h("ear-l", `rotate(${-U + P * 9 - l * 7} 103 105)`), h("ear-r", `rotate(${U * 0.6 - P * 8 + l * 7} 219 105)`), h("paw-l", `translate(${-e.reach * 10} ${e.reach * 2}) rotate(${e.reach * 6} 132 248) scale(${1 + (c.toes || 0) * 0.025} 1)`), h("paw-r", `translate(${e.reach * 10} ${e.reach * 2}) rotate(${-e.reach * 6} 185 248)`);
+    const B = Math.sin(o * 1.25) * f * (1 - l) * 13, q = `M207 286 C${270 + l * 14} ${312 - l * 5} ${294 + l * 5} ${260 + l * 41} ${265 - l * 26 + B} ${238 + l * 61} C${246 - l * 26 + B} ${224 + l * 75} ${242 - l * 30} ${245 + l * 51} ${255 - l * 39} ${253 + l * 48}`;
+    this.parts.tail.setAttribute("d", q), this.parts["tail-light"].setAttribute("d", q), p("sleep-marks", l);
+    for (let r = 0; r < 3; r++) {
+      const d = (this.sleepElapsed + r * 1.7) % 5.1 / 5.1, $ = Math.pow(Math.sin(d * Math.PI), 2) * 0.7;
+      p(`sleep-z-${r}`, $), h(`sleep-z-${r}`, `translate(${d * 29 * f} ${26 - d * 65 * f}) scale(${0.8 + d * 0.3})`);
+    }
+    this.parts["sleep-blur"].setAttribute("stdDeviation", String(n ? 0 : this.sleepElapsed % 5.1 / 5.1 * 1.5));
+    const I = this.sleepElapsed - 8, N = I >= 0 ? I % 24 / 7 : 2, W = N <= 1 ? Math.pow(Math.sin(N * Math.PI), 2) : 0;
+    p("dream-cloud", W * l), h("dream-cloud", `translate(${Math.sin(o * 0.6) * 2 * f} ${7 - W * 10 + Math.sin(o * 0.7) * 2 * f})`), p("hearts", P);
+    for (let r = 0; r < 4; r++) {
+      const d = (o + r * 0.67) % 2.7 / 2.7, $ = r % 2 === 0 ? -1 : 1;
+      p(`heart-${r}`, Math.pow(Math.sin(d * Math.PI), 0.8)), h(`heart-${r}`, `translate(${158 + $ * (70 + d * 30) + Math.sin(o * 2 + r) * 6 * f} ${145 - d * 110 * f}) rotate(${$ * (12 + Math.sin(o + r) * 10 * f)}) scale(${(0.6 + r * 0.12) * (0.7 + d * 0.35)})`);
+    }
+    p("glass-paws", Math.min(1, C * 3));
+    const M = e.leftReach, v = e.rightReach, D = 130 - M * 11 + Q * 7 * M, H = 299 - M * 127 - Z * 2, O = 188 + v * 13 + Q * 7 * v, X = 299 - v * 122 - Z * 2;
+    this.parts["raised-arm-l"].setAttribute("d", T(132, 238, D, H, -7 * M)), this.parts["raised-arm-r"].setAttribute("d", T(188, 238, O, X, 7 * v)), h("glass-paw-l", `translate(${D} ${H}) rotate(${-M * 9}) scale(${0.65 + M * 0.2} ${0.7 + M * 0.16})`), h("glass-paw-r", `translate(${O} ${X}) rotate(${v * 9}) scale(${0.65 + v * 0.2} ${0.7 + v * 0.16})`), p("glass-ripples", (c.press || 0) * 0.22), h("glass-ripples", "translate(0 -18)"), p("paw-l", 1 - Math.max(M, m)), p("paw-r", 1 - v), h("shadow", `translate(160 312) scale(${1 + l * 0.35 + k * 0.08} ${1 - C * 0.2}) translate(-160 -312)`), p("shadow", 0.34 - C * 0.05), p("cast-shadow", 0.18 + k * 0.03);
+    const Y = 133 + m * 14 + e.wipe * (c.side ? 29 : -24), K = 300 - m * 108 - e.wipe * 39;
+    p("groom-limb", Math.min(1, m * 4)), this.parts["groom-arm"].setAttribute("d", T(133, 237, Y, K, -13 * m)), h("groom-hand", `translate(${Y} ${K}) rotate(${-m * 12 - e.wipe * 17})`), p("tongue", (c.lick || 0) * Math.max(m, e.chest, e.flank)), h("tongue", `translate(-3 ${(c.lick || 0) * 2})`), h("whiskers", `translate(0 ${Math.sin(o * 2.2) * 0.4 * f})`), this.raf = requestAnimationFrame(this.frame);
   }
 }
-customElements.get("samt-pfote") || customElements.define("samt-pfote", W);
+customElements.get("samt-pfote") || customElements.define("samt-pfote", ft);
 export {
-  W as Samtpfote
+  ft as Samtpfote
 };

@@ -1,34 +1,38 @@
-# Samtpfote
+# samtpfote von hallowelt42
 
-Eine schwarze SVG-Katze mit goldenen Augen als wiederverwendbare Begleiterin für Webseiten. Die Zeichnung ist unabhängig von den Referenzbildern aufgebaut und benötigt keine Bilddateien. Der Hintergrund bleibt transparent.
+Ein kostenloses Geschenk: eine kleine, interaktive SVG-Katze für private und gewerbliche Webseiten. **Die sichtbare Nennung "hallowelt42 / samtpfote" und die Herkunftshinweise im Quellcode sind verpflichtend.** Die vollständigen Bedingungen stehen in [LIZENZ.txt](./LIZENZ.txt).
 
-## Lokal starten
+[Demo öffnen](https://hallowelt42.github.io/samtpfote/) | [Einbauanleitung](https://hallowelt42.github.io/samtpfote/ANLEITUNG.html) | [Komplettes Paket](https://hallowelt42.github.io/samtpfote/samtpfote-paket.zip)
 
-```sh
-npm install
-npm run dev
-```
+## Die kleine Begleiterin
 
-Die angezeigte lokale Adresse im Browser öffnen. Der Spielplatz bietet manuelle Verhaltensauswahl, Größenänderung, vier Eckpositionen und eine Pause. Darstellung und Schriftgröße werden lokal gespeichert.
+Blickverfolgung mit Augen und Kopf, Blinzeln, Atmung, Ohrzucken, Schwanzbewegungen, Putzen, Strecken, Knuddeln mit einzelnen Herzen und optionalem echtem Schnurren. Bleibt der Zeiger vor ihrer Nase, richtet sie sich auf und zeigt beim Tatzen die Pfotenballen. Bei Ruhe schläft sie ein. Aufsteigende, verschwimmende Schlafzeichen und eine gelegentliche Traumwolke mit Computermaus begleiten den Schlaf. Neue Aktivität weckt sie sanft.
 
-## Eigenständig einbinden
+Die Hauptvariante ist warm und fast schwarz. Creme und Warmgrau stehen für den direkten Vergleich bereit. Der Hintergrund ist transparent. **Wohnzimmer, Sofa, Lampe und Pflanze gehören ausschließlich zur Demo.**
 
-`public/samtpfote.js` in das eigene öffentliche Verzeichnis kopieren und einbinden:
+Der Name steht zentral als `CAT_NAME` in [src/lib/config.js](./src/lib/config.js). Die Demo und die erzeugte Anleitung verwenden denselben Wert. Die Herkunftsnennung bleibt unabhängig vom Katzennamen erhalten.
+
+## Eigenständig einbauen
+
+Das Komplettpaket entpacken und den enthaltenen Ordner `samtpfote` im öffentlichen Verzeichnis der eigenen Webseite ablegen. Danach:
 
 ```html
-<script type="module" src="/samtpfote.js"></script>
+<script type="module" src="/samtpfote/samtpfote.js"></script>
 <samt-pfote
   position="bottom-right"
+  coat="black"
   sleep-after="35"
-  style="--cat-size: 220px; --cat-offset: 16px; --cat-z-index: 50"
+  style="--cat-size:220px; --cat-offset:16px"
 ></samt-pfote>
 ```
 
-Die Datei enthält Zeichnung, Gestaltung und Verhaltenssteuerung. Weitere Laufzeitabhängigkeiten oder externe Anfragen sind nicht erforderlich. Ein vollständiges Beispiel liegt unter `public/beispiel.html`. Die Dateien über einen Webserver ausliefern; Module werden beim direkten Öffnen als lokale Datei häufig blockiert.
+Keine zusätzlichen Bibliotheken erforderlich. Alle Dateien liegen auf der eigenen Webseite. Ohne `position` bleibt die Katze im normalen Dokumentfluss. In kleinen Seitenecken begrenzt die Komponente ihre Breite auf 35vw.
+
+Für Schnurren `sound-src="/samtpfote/audio/schnurren.mp3"` und optional `volume="35"` ergänzen. Ton startet ausschließlich beim bewussten Streicheln. Die echte Aufnahme stammt von Adam Cuerden und ist gemeinfrei. Herkunft und Bearbeitung stehen in [HERKUNFT.txt](./HERKUNFT.txt).
 
 ## Komponente im Projekt
 
-Den Ordner `src/lib` kopieren. Die drei Module `art.js`, `behavior.js` und `widget.js` gehören zur Komponente.
+Den vollständigen Ordner `src/lib` übernehmen. Das Wohnzimmer `Room.svelte` wird für den Einbau nicht benötigt.
 
 ```svelte
 <script>
@@ -40,57 +44,32 @@ Den Ordner `src/lib` kopieren. Die drei Module `art.js`, `behavior.js` und `widg
   bind:this={cat}
   size={220}
   position="bottom-right"
+  coat="black"
   sleepAfter={35}
-  onstate={({ state, label }) => console.log(state, label)}
 />
-
-<button onclick={() => cat.perform('petting')}>Streicheln</button>
+<button onclick={() => cat.perform('petting')}>Knuddeln</button>
 ```
 
-Die Komponente verwendet die aktuelle Reaktivität mit `$props`. Das Laden des Browsermoduls erfolgt nach dem Einhängen und ist damit auch für serverseitig gerenderte Seiten geeignet.
+Die Komponente verwendet `$props` und lädt das Browsermodul erst nach dem Einhängen. `name` überschreibt bei Bedarf den zentralen Namen. `soundSrc` aktiviert die optionale Aufnahme, `volume` setzt die Lautstärke. `onstate` empfängt `{ state, label }`.
 
-## Einstellungen
-
-| Einstellung | Bedeutung |
-| --- | --- |
-| `position` | `bottom-right`, `bottom-left`, `top-right`, `top-left`. Ohne Angabe bleibt die Katze im normalen Dokumentfluss. |
-| `sleep-after` | Sekunden bis zum Schlafen, Standard 35, mindestens 5. Schläfrigkeit beginnt nach 62 Prozent der Zeit. |
-| `paused` | Vorhandenes Attribut pausiert die Animation. Zum Fortsetzen entfernen. |
-| `--cat-size` | Breite einschließlich Bewegungsraum, Standard 220px. In festen Seitenecken auf kleinen Bildschirmen maximal 35vw. |
-| `--cat-offset` | Abstand zur Ecke, Standard 16px, zusätzlich zu sicheren Bildschirmrändern. |
-| `--cat-z-index` | Ebene der festen Positionierung, Standard 50. |
-
-Die eigentliche Zeichnung nimmt einen Teil des transparenten Bewegungsraums ein. Blickverfolgung verwendet immer die aktuelle Bildschirmposition der Katze. Scrollen, Mausbewegung, Tastatur und Berührung wecken sie sanft. Ein Klick oder die Aktivierung per Tastatur streichelt sie. Auf Geräten ohne Maus bleiben die automatischen Verhaltensweisen verfügbar.
-
-```js
-const cat = document.querySelector('samt-pfote');
-cat.perform('sleeping');
-cat.perform('curious');
-cat.perform('stretching');
-cat.perform('grooming');
-cat.perform('petting');
-cat.perform('auto');
-cat.addEventListener('catstate', ({ detail }) => {
-  console.log(detail.state, detail.label);
-});
-```
-
-Kurzzeitige manuelle Aktionen enden automatisch. Erzwungener Schlaf endet durch erneute Aktivität. Die erste knappe Sekunde nach dem Schlafbefehl ignoriert Eingaben, damit das Loslassen und kleine Mausbewegungen beim Auslösen die Katze nicht sofort wieder wecken.
-
-## Bewegung und Einbau
-
-Die Animation läuft über eine gemeinsame Bildschleife mit zeitbasierter Dämpfung. Körper, Kopf, Ohren, Pupillen, Pfoten und Schwanz werden als SVG-Gruppen unabhängig geführt. Die Übergänge führen zur jeweils neuen Pose, ohne eine laufende Aktion abrupt zurückzusetzen. Im Hintergrund hält die Schleife an; beim Entfernen werden Ereignisbindungen und Bildschleife aufgeräumt. Mehrere Katzen besitzen voneinander getrennte SVG-Kennungen.
-
-Die Systemeinstellung für reduzierte Bewegung unterdrückt die dekorativen Dauerbewegungen und zufälligen Aktionen. Blickverfolgung und verständliche Zustandsübergänge bleiben verfügbar. Die Katze besitzt einen per Tastatur erreichbaren Streichelknopf. Die nicht belegte Fläche um eine fest positionierte Katze lässt Zeigerereignisse zur Seite durch. Die Katze selbst benötigt eine freie Ecke und sollte keine wichtigen Bedienelemente überlagern.
-
-Die Darstellung ist bewusst stilisiert. Putzen, Strecken und Einrollen sind aus den SVG-Teilen komponierte Animationen. Dies ist eine erste ausgearbeitete Fassung; die Wirkung und das Timing sollten vor dem Einsatz auf Zielgeräten beurteilt werden.
-
-## Prüfen und bauen
+## Lokal entwickeln
 
 ```sh
+npm install
+npm run dev
 npm run check
 npm test
 npm run build
 ```
 
-Der Bau erzeugt `dist/` für den Spielplatz und `dist-widget/samtpfote.js` für den eigenständigen Einbau. Die aktuelle Datei wird auch nach `public/samtpfote.js` kopiert. `public/miso.svg` ist die statische Zeichnung ohne Verhaltenssteuerung.
+Die Demo füllt das Fenster ohne Seitenscrollen. Nur Bedienbereiche und Anleitung scrollen bei Platzbedarf innerhalb ihrer Bereiche. Helle und dunkle Darstellung sowie gespeicherte Schriftvergrößerung sind über die Kopfleiste erreichbar. Auf kleinen Bildschirmen öffnet das Zahnrad die Katzeneinstellungen.
+
+Die Schriften werden aus den installierten Paketen lokal gebündelt. Die Demo lädt keine externen Schriften, Skripte, Symbole oder Audiodateien nach.
+
+Der Bau erzeugt `dist/` für die Demo, `dist-widget/samtpfote.js` für die Einzelkomponente und `public/samtpfote-paket.zip` mit Anleitung, Komponente, Quellcode und optionalem Schnurren. Bei Änderungen des zentralen Namens die Dateien neu bauen.
+
+Die Bewegung basiert auf einer gemeinsamen, zeitabhängigen Bildschleife. Körperteile sind getrennte SVG-Gruppen. Im Hintergrund hält die Schleife an; Entfernen räumt Ereignisbindungen und Audio auf. Reduzierte Bewegung unterdrückt dekorative Dauerbewegungen und zufällige Aktionen.
+
+## Gesicherter erster Entwurf
+
+Der unveränderte erste Entwurf ist im Versionsstand `v0.1-erster-entwurf` gesichert. Zusätzlich enthält `referenz/` die damalige Katzenzeichnung, Bewegungssteuerung und Oberfläche. Diese Dateien dienen als Vergleich und werden nicht in die aktuelle Demo eingebunden.

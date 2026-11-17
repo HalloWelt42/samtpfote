@@ -1,0 +1,15 @@
+samtpfote von hallowelt42
+
+Katzenzeichnung, Verhalten, Gestaltung und Demo: hallowelt42.
+Sichtbare Herkunftsnennung und Quellcodehinweise sind gemäß LIZENZ.txt verpflichtend.
+
+Echte Schnurr-Aufnahme
+Urheber: Adam Cuerden
+Originaltitel: Whiskers' purr
+Aufnahme vom 22. Juli 2009, eine Hauskatze beim Streicheln.
+Quelle: https://commons.wikimedia.org/wiki/File:Whiskers%27_purr.ogg
+Originaldatei: https://upload.wikimedia.org/wikipedia/commons/c/c9/Whiskers%27_purr.ogg
+Freigabe: vom Urheber weltweit zur gemeinfreien Nutzung freigegeben; soweit dies rechtlich nicht möglich ist, uneingeschränkte Erlaubnis für jede Nutzung ohne Bedingungen, vorbehaltlich gesetzlicher Anforderungen.
+Projektfassung: in das Format MP3 gewandelt, hohe und sehr tiefe Frequenzen gefiltert, auf 10,5 Sekunden gekürzt und an den Rändern weich eingeblendet und ausgeblendet. Die Originaldatei liegt im Repository unter public/audio/schnurren.ogg.
+
+Alle für die Demo erforderlichen Dateien werden lokal ausgeliefert. Es werden zur Laufzeit keine externen Skripte, Schriften oder Symbole nachgeladen.

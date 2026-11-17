@@ -1,0 +1,24 @@
+samtpfote - Nutzungsbedingungen mit verpflichtender Namensnennung
+Urheber: hallowelt42
+
+Dieses Projekt ist ein kostenloses Geschenk von hallowelt42.
+
+1. Erlaubte Nutzung
+Du darfst samtpfote auf privaten und gewerblichen Webseiten verwenden, kopieren, anpassen und weitergeben. Die Nutzung kostet nichts. Die Erlaubnis gilt unter den folgenden Bedingungen.
+
+2. Sichtbare Namensnennung ist Pflicht
+Bei jeder öffentlichen Darstellung muss "hallowelt42 / samtpfote" gut lesbar und in unmittelbarem Zusammenhang mit der Katze sichtbar bleiben. Die mitgelieferte Signatur darf nicht entfernt, versteckt, abgeschnitten, überdeckt oder unleserlich gemacht werden. Bei einer eigenen Gestaltung der Namensnennung muss diese mindestens gleichwertig sichtbar sein.
+
+3. Hinweise im Quellcode
+Die Herkunftshinweise auf hallowelt42 und samtpfote in Quellcode, gebauten Dateien und Metadaten müssen erhalten bleiben. Bei der Weitergabe müssen diese Nutzungsbedingungen mitgeliefert werden. Bearbeitete Fassungen müssen weiterhin auf hallowelt42 als Urheber des ursprünglichen Projekts verweisen. Eigene Ergänzungen dürfen gesondert gekennzeichnet werden.
+
+4. Eigene Namen und Anpassungen
+Du darfst der Katze einen eigenen Namen geben und Darstellung und Verhalten anpassen. Die Benennung der Katze ersetzt nicht die verpflichtende Herkunftsnennung "hallowelt42 / samtpfote". Eine Änderung der Katze darf die Herkunftshinweise und diese Bedingungen nicht außer Kraft setzen.
+
+5. Fremde Bestandteile
+Diese Bedingungen betreffen die eigenen Projektbestandteile. Für enthaltene Schriften, Symbolbibliotheken, Laufzeitbibliotheken und die Schnurr-Aufnahme gelten deren eigene Nutzungsrechte. Die Herkunft der Schnurr-Aufnahme steht in HERKUNFT.txt. Die Aufnahme ist gemeinfrei. Fremde Bestandteile werden durch diese Bedingungen nicht zusätzlichen Beschränkungen unterworfen.
+
+6. Bereitstellung
+Die Bereitstellung erfolgt ohne Zusicherung einer bestimmten Funktion, Verfügbarkeit oder Eignung. Zwingende gesetzliche Rechte bleiben unberührt.
+
+Mit der Nutzung oder Weitergabe akzeptierst du diese Bedingungen. Falls du die verpflichtende Namensnennung nicht beibehalten möchtest, ist die Nutzung der eigenen Projektbestandteile nicht gestattet.
