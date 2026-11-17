@@ -5,7 +5,7 @@ import { CAT_NAME, ATTRIBUTION } from './config.js';
 import { choreography, armPath, torsoPath } from './motion.js';
 import { clamp, follow, idleState, stateLabels } from './behavior.js';
 let serial = 0;
-const styles = `:host{position:relative;display:block;width:var(--cat-size,220px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,10000);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,180px),35vw)}}`;
+const styles = `:host{position:relative;display:block;width:var(--cat-size,220px);height:auto;aspect-ratio:320/340;contain:layout style;isolation:isolate;line-height:0;touch-action:pan-y;user-select:none}:host([position]){position:fixed;z-index:var(--cat-z-index,10000);transform:translate3d(var(--cat-avoid-x,0px),0,0);margin:var(--cat-offset,16px);pointer-events:none}:host([position="bottom-right"]){bottom:env(safe-area-inset-bottom,0px);right:env(safe-area-inset-right,0px)}:host([position="bottom-left"]){bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px)}:host([position="top-right"]){top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px)}:host([position="top-left"]){top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px)}button{all:unset;display:block;width:100%;height:100%;cursor:pointer;pointer-events:auto;border-radius:40%;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #b8a061;outline-offset:-8px}svg{display:block;width:100%;height:100%;overflow:visible}button:hover{cursor:pointer}.credit{position:absolute;left:0;right:0;bottom:0;text-align:center;font:9px/1.3 sans-serif;color:var(--cat-credit,#7b7c6c);letter-spacing:.25px;pointer-events:none}svg [data-part="credit"]{opacity:0}:host([credit-mode="external"]) .credit{display:none}@media(max-width:600px){:host([position]){width:min(var(--cat-size,180px),35vw)}}`;
 
 export class Samtpfote extends HTMLElement {
   static observedAttributes = ['sleep-after', 'paused', 'sound-src', 'cat-name'];
@@ -17,7 +17,7 @@ export class Samtpfote extends HTMLElement {
     this.state = 'curious'; this.lastActivity = 0; this.lastPointerWake = 0; this.lastFrame = 0; this.time = 0;
     this.gaze = {x:0,y:0}; this.target = {x:0,y:0}; this.pose = {sleep:0,blink:1,pet:0,stretch:0,groom:0,headX:0,headY:0};
     this.nextBlink = 2 + Math.random()*3; this.blinkStart = -100; this.nextAction = 7 + Math.random()*7; this.actionUntil = 0; this.override = null; this.wakeUntil = 0;
-    this.sleepElapsed=0;this.nearTime=0;this.swatCooldown=0;this.pointer=null;this.audioVolume=0;this.actionStarted=0;this.groomVariant=0;this.groomCount=0;
+    this.sleepElapsed=0;this.nearTime=0;this.swatCooldown=0;this.pointer=null;this.audioVolume=0;this.actionStarted=0;this.groomVariant=0;this.groomCount=0;this.avoid={x:0,target:0,dwell:0,clear:0,enteredAt:0};
     this.frame = this.frame.bind(this);
   }
   connectedCallback() {
@@ -92,7 +92,7 @@ export class Samtpfote extends HTMLElement {
     if(this.override && !['sleeping','drowsy','curious'].includes(this.override) && now>this.actionUntil)this.override=null;
     let state=this.override||idleState((now-this.lastActivity)/1000,this.sleepAfter);
     if(!this.override && now<this.wakeUntil)state='waking';
-    if(!this.override && state==='curious' && t>this.nextAction && !reduced && !paused){
+    if(!this.override && state==='curious' && t>this.nextAction && !reduced && !paused && Math.abs(this.avoid.target-this.avoid.x)<.5){
       this.override=Math.random()<.55?'watching':Math.random()<.5?'grooming':'stretching';this.actionStarted=now;if(this.override==='grooming')this.groomVariant=Math.floor(Math.random()*3);this.actionUntil=now+(this.override==='grooming'?12200:this.override==='stretching'?5600:4200);this.nextAction=t+12+Math.random()*15;state=this.override;
     }
     if(this.pointer && !this.override && !['sleeping','drowsy','waking'].includes(state) && !paused && !reduced && now>this.swatCooldown){
@@ -106,6 +106,27 @@ export class Samtpfote extends HTMLElement {
     this.setState(state);
     if(paused)return;
     const sleeping=state==='sleeping',drowsy=state==='drowsy';
+    const dock=this.getAttribute('position'),avoid=this.avoid;
+    if(dock && this.pointer && !reduced){
+      const rect=this.getBoundingClientRect(),homeLeft=rect.left-avoid.x;
+      const atHome=this.pointer.x>homeLeft-45 && this.pointer.x<homeLeft+rect.width+45 && this.pointer.y>rect.top+rect.height*.18 && this.pointer.y<rect.bottom+15;
+      const eligible=!['sleeping','petting','grooming','stretching','swatting'].includes(state);
+      if(atHome){if(!avoid.enteredAt)avoid.enteredAt=now;avoid.dwell=(now-avoid.enteredAt)/1000;}else {avoid.enteredAt=0;avoid.dwell=0;}
+      avoid.clear=atHome?0:avoid.clear+dt;
+      if(avoid.dwell>=3 && avoid.target===0 && state!=='sleeping'){
+        this.override=null;this.actionUntil=0;this.nextAction=t+7;state='curious';this.setState(state);
+        const room=dock.endsWith('right')?rect.left-12:innerWidth-rect.right-12;
+        const distance=clamp(rect.width*.5,75,145);
+        avoid.target=(dock.endsWith('right')?-1:1)*Math.max(0,Math.min(distance,room));avoid.dwell=0;
+      }
+      if(avoid.clear>8 && eligible)avoid.target=0;
+    }else {avoid.target=0;avoid.dwell=0;avoid.clear=0;avoid.enteredAt=0;}
+    const before=avoid.x;avoid.x=follow(avoid.x,avoid.target,2.5,dt);
+    if(Math.abs(avoid.x-avoid.target)<.05)avoid.x=avoid.target;
+    this.style.setProperty('--cat-avoid-x',`${avoid.x.toFixed(2)}px`);
+    const walk=reduced?0:clamp(Math.abs(avoid.x-before)/Math.max(dt,.001)/50,0,1);
+    const stride=Math.sin(t*8),stepLeft=Math.max(0,stride)*5*walk,stepRight=Math.max(0,-stride)*5*walk;
+
     this.sleepElapsed=(sleeping || (this.sleepElapsed>0 && this.pose.sleep>.05))?this.sleepElapsed+dt:0;
     if(this.audio){
       const targetVolume=state==='petting'?clamp(Number(this.getAttribute('volume')||35)/100,0,1):0;
@@ -139,10 +160,10 @@ export class Samtpfote extends HTMLElement {
     p.leftReach=follow(p.leftReach||0,poseAction.left||0,14,dt);p.rightReach=follow(p.rightReach||0,poseAction.right||0,14,dt);
     const tx=(name,xform)=>this.parts[name].setAttribute('transform',xform);
     const opacity=(name,n)=>this.parts[name].setAttribute('opacity',String(n));
-    tx('root',`translate(${motion*Math.sin(t*.44)*.7} ${-hop})`);
+    tx('root',`translate(${motion*Math.sin(t*.44)*.7} ${-hop-Math.sin(t*16)*walk*.6}) rotate(${stride*walk*.8} 158 285)`);
     tx('body',`translate(${158+gr*3+st*1.5} 310) scale(${1+s*.28+st*.06-swat*.04} ${1-s*.47-st*.08+swat*.03+breath*.004}) translate(-158 -310)`);
     const torso=torsoPath(st,swat);this.parts.torso.setAttribute('d',torso);this.parts['torso-light'].setAttribute('d',torso);
-    const tilt=(gx*5+Math.sin(t*.65)*1.1*motion)*(1-s)-s*17+pet*-8+gr*10-p.wipe*7-st*4+p.chest*13+p.flank*24+(poseAction.shake||0)*2;
+    const tilt=(gx*5+Math.sin(t*.65)*1.1*motion)*(1-s)-s*17+pet*-8+gr*10-p.wipe*7-st*4+p.chest*13+p.flank*24+(poseAction.shake||0)*2-stride*walk*1.2;
     tx('head',`translate(${gx*5-s*26-st*3-gr*8+p.flank*15} ${gy*3+s*83+st*25+breath+gr*9-p.wipe*10-hop*3+p.chest*27+p.flank*23+(poseAction.lick||0)*1.2*motion}) rotate(${tilt} 158 175)`);
     const openness=clamp(p.blink*(1-s),.015,1);
     tx('eye-l',`translate(119 143) scale(1 ${openness}) translate(-119 -143)`);
@@ -151,8 +172,8 @@ export class Samtpfote extends HTMLElement {
     tx('pupil-l',`translate(${gx*9} ${gy*6})`);tx('pupil-r',`translate(${gx*9} ${gy*6})`);
     const earFlick=Math.pow(Math.max(0,Math.sin(t*1.13)),18)*9*motion;
     tx('ear-l',`rotate(${-earFlick+pet*9-s*7} 103 105)`);tx('ear-r',`rotate(${earFlick*.6-pet*8+s*7} 219 105)`);
-    tx('paw-l',`translate(${-p.reach*10} ${p.reach*2}) rotate(${p.reach*6} 132 248) scale(${1+(poseAction.toes||0)*.025} 1)`);
-    tx('paw-r',`translate(${p.reach*10} ${p.reach*2}) rotate(${-p.reach*6} 185 248)`);
+    tx('paw-l',`translate(${-p.reach*10+stride*walk*2} ${p.reach*2-stepLeft}) rotate(${p.reach*6+stride*walk*3} 132 248) scale(${1+(poseAction.toes||0)*.025} 1)`);
+    tx('paw-r',`translate(${p.reach*10-stride*walk*2} ${p.reach*2-stepRight}) rotate(${-p.reach*6-stride*walk*3} 185 248)`);
     const tailWave=Math.sin(t*1.25)*motion*(1-s)*13;
     const d=`M207 286 C${270+s*14} ${312-s*5} ${294+s*5} ${260+s*41} ${265-s*26+tailWave} ${238+s*61} C${246-s*26+tailWave} ${224+s*75} ${242-s*30} ${245+s*51} ${255-s*39} ${253+s*48}`;
     this.parts.tail.setAttribute('d',d);this.parts['tail-light'].setAttribute('d',d);this.parts['tail-shadow'].setAttribute('d',d);

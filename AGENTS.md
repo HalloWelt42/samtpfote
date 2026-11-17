@@ -12,3 +12,8 @@
 - Änderungen vollständig prüfen, bauen und auf der vorhandenen Demoseite veröffentlichen, soweit in der Sitzung autorisiert.
 - Schnurren ist in der Demo und im vorgewählten Einbaucode eingeschaltet, startet aber ausschließlich nach bewusster Streichelaktion.
 - Putzen verwendet mehrere abgestimmte Sequenzen mit Pfote, Lecken, Wangen- und Ohrpflege sowie Brustpflege. Keine bloße uniforme Skalierung als Bewegung verwenden.
+- Die linke Leiste zeigt nur "Das ist {CAT_NAME}" und die Verhaltensauswahl. Keine zusätzlichen Begrüßungstexte oder Verweise dort.
+- Fellfarben und Lichtautomatik liegen im Kopfbereich. Auswahlzustände zeigen nur Farbflächen, keine zusätzlichen Rahmen oder Punkte. Keine senkrechten Spaltentrenner oder dekorativen Trennlinien in der Steuerung.
+- Die rechte Steuerung bleibt kompakt mit 8px oberem und unterem Innenabstand; Scrollen nur bei echtem Platzmangel.
+- Augenänderungen zunächst getrennt in der Augenstudie vergleichen. Die Hauptkatze behält ihre Augen bis zur ausdrücklichen Übernahmeentscheidung.
+- Platzmachen wird ausschließlich in den Seitenecken ausgelöst: nach 3 Sekunden Mausaufenthalt in gleicher Höhe sanft nach innen weichen und nach freiem Bereich mit Verzögerung zurückkehren.
